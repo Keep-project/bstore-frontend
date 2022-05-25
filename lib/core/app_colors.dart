@@ -20,4 +20,9 @@ const kSecondaryColor = Color(0xFF3C4046);
 const kBackgroundColor = Color(0xFFF9F8FD);
 const kColorWhite = Colors.white;
 
-
+// App Colors
+const kDarkColor86 = Color(0xFF202C44);
+const kDarkColor90 = Color(0xFF25282F);
+const kWhiteColor = Colors.white;
+const kOrangeColor = Color(0xFFF96D41);
+const kGreyColor85 = Color(0xFFF3F3F3);

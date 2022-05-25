@@ -2,4 +2,8 @@
 
 class AppRoutes{
   static const String HOME = "/home";
+  static const String REGISTER = "/register";
+  static const String LOGIN = "/login";
+  static const String DETAILS = "/detail";
+  static const String DASHBORD = "/dashbord";
 }
