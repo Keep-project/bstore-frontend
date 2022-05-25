@@ -18,7 +18,7 @@ class App extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Book Store',
       theme: ThemeData(
-        primarySwatch: kPrimaryColor,
+        // primarySwatch: kPrimaryColor,
         scaffoldBackgroundColor: kColorWhite,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
