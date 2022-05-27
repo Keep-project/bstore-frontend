@@ -13,7 +13,7 @@ class HeadTitle extends StatelessWidget {
     return Text(title!,
       style: Theme.of(context).textTheme.titleLarge!
       .copyWith(
-        color: kDarkColor90,
+        color: kDarkColor90.withOpacity(0.8),
         fontWeight: FontWeight.w600,
       ),
     );

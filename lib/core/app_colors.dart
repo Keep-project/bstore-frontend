@@ -25,4 +25,5 @@ const kDarkColor86 = Color(0xFF202C44);
 const kDarkColor90 = Color(0xFF25282F);
 const kWhiteColor = Colors.white;
 const kOrangeColor = Color(0xFFF96D41);
+const kOrangeColor39 = Color(0xFFD66A21);
 const kGreyColor85 = Color(0xFFF3F3F3);
