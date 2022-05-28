@@ -6,4 +6,5 @@ class AppRoutes{
   static const String LOGIN = "/login";
   static const String DETAILS = "/detail";
   static const String DASHBORD = "/dashbord";
+  static const String SEARCH = "/search";
 }

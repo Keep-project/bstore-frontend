@@ -6,9 +6,9 @@ import 'package:bstore/components/popular_book_item.dart';
 import 'package:bstore/components/search_bar.dart';
 import 'package:bstore/core/app_colors.dart';
 import 'package:bstore/core/app_size.dart';
+import 'package:bstore/router/app_router.dart';
 import 'package:bstore/screens/home/components/category_item.dart';
 import 'package:bstore/screens/home/components/home_banner.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -75,7 +75,7 @@ class HomeScreen extends StatelessWidget {
                                         const Spacer(),
                                         InkWell(
                                             onTap: () {
-                                              print("Voir plus");
+                                              Get.toNamed(AppRoutes.SEARCH);
                                             },
                                             child: const Opacity(
                                               opacity: 0.5,

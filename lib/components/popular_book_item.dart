@@ -49,9 +49,9 @@ class PopularBookItem extends StatelessWidget {
                     borderRadius:
                         BorderRadius.circular(8),
                     image: const DecorationImage(
-                      fit: BoxFit.cover,
+                      fit: BoxFit.fill,
                       image: AssetImage(
-                          "assets/images/femme-de-pouvoir.jpg"),
+                          "assets/images/jeune-afrique.jpg"),
                     ),
                   ),
                 ),

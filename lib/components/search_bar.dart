@@ -1,16 +1,20 @@
 import 'package:bstore/core/app_colors.dart';
+import 'package:bstore/router/app_router.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class SearchBar extends StatelessWidget {
+  final EdgeInsetsGeometry? contentPadding;
+  final double? iconSize;
   const SearchBar({
-    Key? key,
+    Key? key, this.contentPadding, this.iconSize,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 50,
+      // height: 50,
       decoration: BoxDecoration(
         color: kGreyColor85,
          boxShadow: [
@@ -23,14 +27,17 @@ class SearchBar extends StatelessWidget {
         borderRadius: BorderRadius.circular(25)
       ),
       child: TextField(
+        autofocus: false,
         style: TextStyle(
           fontSize: 16,
           color: kOrangeColor.withOpacity(0.8),
         ),
         decoration: InputDecoration(
-          suffixIcon: const Icon(CupertinoIcons.search, size: 36, color: kOrangeColor),
+          suffixIcon: InkWell(
+            onTap: (){Get.toNamed(AppRoutes.SEARCH);},
+            child: Icon(CupertinoIcons.search, size: iconSize ?? 36, color: kOrangeColor)),
           hintText: "Rechercher un livre ...",
-          contentPadding: const EdgeInsets.all(16),
+          contentPadding: contentPadding ?? const EdgeInsets.all(16),
           enabledBorder: InputBorder.none,
           focusedBorder: InputBorder.none,
           hintStyle: TextStyle(

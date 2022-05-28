@@ -6,15 +6,17 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class BookItem extends StatelessWidget {
+  final double? width;
+  final double? marginRight;
   const BookItem({
-    Key? key,
+    Key? key, this.width, this.marginRight,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 155,
-      margin: const EdgeInsets.only(right: kDefaultMargin * 2, bottom: 10,),
+      width: width ?? 155,
+      margin: EdgeInsets.only(right: marginRight ?? kDefaultMargin * 2, bottom: 10,),
       decoration: BoxDecoration(
         color: kWhiteColor,
         borderRadius: BorderRadius.circular(15),
@@ -31,11 +33,11 @@ class BookItem extends StatelessWidget {
         child: Column(
           children: [
             Container(
-              height: 208,
+              height: 200,
               width: double.maxFinite,
               decoration: BoxDecoration(
                   image: const DecorationImage(
-                      fit: BoxFit.cover,
+                      fit: BoxFit.fill,
                       image: AssetImage("assets/images/femme-de-pouvoir.jpg")),
                   borderRadius: BorderRadius.circular(15)),
             ),

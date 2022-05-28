@@ -23,6 +23,7 @@ const kColorWhite = Colors.white;
 // App Colors
 const kDarkColor86 = Color(0xFF202C44);
 const kDarkColor90 = Color(0xFF25282F);
+const kBlueDark = Color(0xFF212734);
 const kWhiteColor = Colors.white;
 const kOrangeColor = Color(0xFFF96D41);
 const kOrangeColor39 = Color(0xFFD66A21);

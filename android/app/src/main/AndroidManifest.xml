@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.bstore">
    <application
-        android:label="bstore"
+        android:label="Book Store"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
