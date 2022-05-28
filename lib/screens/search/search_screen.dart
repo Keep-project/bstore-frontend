@@ -4,6 +4,7 @@ import 'package:bstore/components/book_item.dart';
 import 'package:bstore/components/search_bar.dart';
 import 'package:bstore/core/app_colors.dart';
 import 'package:bstore/core/app_size.dart';
+import 'package:bstore/router/app_router.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -27,7 +28,7 @@ class SearchScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const BuildAppBar(),
-                const SizedBox(height: kDefaultMargin * 4),
+                const SizedBox(height: kDefaultMargin * 3.4),
                 Container(
                   padding: const EdgeInsets.symmetric(
                       horizontal: kDefaultPadding * 1.5),
@@ -54,7 +55,7 @@ class SearchScreen extends StatelessWidget {
               ],
             ),
             Positioned(
-              top: 190,
+              top: 140,
               bottom: 0,
               left: 0,
               right: 0,
@@ -63,13 +64,12 @@ class SearchScreen extends StatelessWidget {
                   color: kWhiteColor,
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(kDefaultRadius * 4),
-                    // topRight: Radius.circular(kDefaultRadius * 4),
                   ),
                 ),
               ),
             ),
             Positioned(
-              top: 150,
+              top: 165,
               bottom: 0,
               left: 0,
               right: 0,
@@ -133,7 +133,7 @@ class BuildAppBar extends StatelessWidget {
         const SizedBox(width: 5),
         IconButton(
             onPressed: () {
-              print("Navigate to profil page");
+              Get.toNamed(AppRoutes.DASHBORD);
             },
             icon: const Icon(CupertinoIcons.person_fill,
                 size: 26, color: kWhiteColor)),
@@ -142,32 +142,5 @@ class BuildAppBar extends StatelessWidget {
   }
 }
 
-// Container(
-//   margin: const EdgeInsets.only(top: 50),
-//   width: double.infinity,
-//   padding: const EdgeInsets.all(kDefaultPadding),
-//   decoration: const BoxDecoration(
-//     color: kWhiteColor,
-//     borderRadius: BorderRadius.only(
-//       topLeft: Radius.circular(kDefaultRadius * 4),
-//       topRight: Radius.circular(kDefaultRadius * 4),
-//     ),
-//   ),
-//   // child: const Text(""),
-// ),
-// Container(
-//   padding: const EdgeInsets.all(kDefaultPadding),
-//   child: Column(
-//     children: const [
-//       BookItem(),
-//       BookItem(),
-//       BookItem(),
-//       BookItem(),
-//       BookItem(),
-//       BookItem(),
-//       BookItem(),
-//       BookItem(),
-//     ],
-//   ),
-// ),
+
 

@@ -7,8 +7,9 @@ import 'package:get/get.dart';
 
 
 class PopularBookItem extends StatelessWidget {
+  final EdgeInsets? margin;
   const PopularBookItem({
-    Key? key,
+    Key? key, this.margin,
   }) : super(key: key);
 
   @override
@@ -21,7 +22,7 @@ class PopularBookItem extends StatelessWidget {
           padding: const EdgeInsets.symmetric(
               horizontal: kDefaultPadding / 5,
               vertical: 2),
-          margin: const EdgeInsets.only(
+          margin: margin?? const EdgeInsets.only(
               left: kDefaultMargin * 2, right: kDefaultMargin * 2, bottom: kDefaultMargin*1.5),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8),
@@ -214,7 +215,7 @@ class CustomIconData extends StatelessWidget {
           onPressed: () {},
           icon: Icon(iconData!, size: size!, color: color ?? kDarkColor86.withOpacity(0.6)),
         ),
-        Text(value!, style: TextStyle(color:  kDarkColor86.withOpacity(0.7))),
+        Text(value!, style: TextStyle(color:  kDarkColor86.withOpacity(0.7), fontSize: 10)),
       ],
     );
   }

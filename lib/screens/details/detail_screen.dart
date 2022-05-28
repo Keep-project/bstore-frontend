@@ -2,8 +2,11 @@
 
 import 'package:bstore/components/book_item.dart';
 import 'package:bstore/components/head_title.dart';
+import 'package:bstore/components/popular_book_item.dart';
 import 'package:bstore/core/app_colors.dart';
 import 'package:bstore/core/app_size.dart';
+import 'package:bstore/router/app_router.dart';
+import 'package:bstore/screens/details/components/icon_label.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -148,7 +151,6 @@ class DetailScreen extends StatelessWidget {
                 ),
               ),
               Container(
-                // width: double.infinity,
                 padding: const EdgeInsets.symmetric(
                   horizontal: kDefaultPadding,
                 ),
@@ -167,6 +169,67 @@ class DetailScreen extends StatelessWidget {
                         height: 1.5,
                       ),
                     ),
+                    const SizedBox(height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          height: 45,
+                          width: Get.width / 2 - 32,
+                          decoration: BoxDecoration(
+                            color: kOrangeColor.withOpacity(0.6),
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          child: Center(
+                            child: RichText(
+                              text: const TextSpan(
+                                children: [
+                                  TextSpan(
+                                    text: "1.1M ",
+                                    style: TextStyle(
+                                      color: kWhiteColor,
+                                      // fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                   TextSpan(
+                                    text: "Téléchargements ",
+                                    style: TextStyle(
+                                      color: kWhiteColor,
+                                      // fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ]
+                              ),
+                            ),
+                          ),
+                        ),
+                        Container(
+                          height: 45,
+                          width: Get.width / 2 - 32,
+                          decoration: BoxDecoration(
+                            color: kGreenColor,
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: const [
+                               Text("Télécharger",
+                                  style: TextStyle(
+                                    color: kWhiteColor,
+                                    // fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                SizedBox(width: 8),
+                                Icon(CupertinoIcons.cloud_download_fill, color: kWhiteColor, size: 26)
+                            ]
+                          ),
+                        ),
+
+                      ]
+                    ),
                     const SizedBox(height: 30),
                     Row(children: [
                       const HeadTitle(
@@ -175,7 +238,7 @@ class DetailScreen extends StatelessWidget {
                       const Spacer(),
                       InkWell(
                           onTap: () {
-                            print("Voir plus");
+                            Get.toNamed(AppRoutes.SEARCH);
                           },
                           child: const Opacity(
                             opacity: 0.5,
@@ -225,82 +288,24 @@ class DetailScreen extends StatelessWidget {
         child: const Icon(CupertinoIcons.arrow_left,
             color: kDarkColor90, size: 26),
       ),
-      actions: const [
+      actions: [
         Padding(
-          padding: EdgeInsets.all(8.0),
-          child:
-              Icon(CupertinoIcons.person_fill, color: kDarkColor90, size: 26),
+          padding: const EdgeInsets.all(8.0),
+          child: InkWell(
+            onTap: () {
+              Get.toNamed(AppRoutes.DASHBORD);
+            },
+            child: const Icon(CupertinoIcons.person_fill,
+                color: kDarkColor90, size: 26),
+          ),
         ),
-        SizedBox(
+        const SizedBox(
           width: 5,
         ),
-        Padding(
+        const Padding(
           padding: EdgeInsets.all(8.0),
           child: Icon(Icons.more_vert, color: kDarkColor90, size: 26),
         )
-      ],
-    );
-  }
-}
-
-class IconAndLabel extends StatelessWidget {
-  final String? libelle;
-  final IconData iconData;
-  final double? size;
-  const IconAndLabel(
-      {Key? key, this.libelle, required this.iconData, this.size})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Icon(
-          iconData,
-          size: size ?? 22,
-          color: kDarkColor86,
-        ),
-        Text(
-          libelle!,
-          style: const TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.bold,
-            color: kWhiteColor,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class CustomIconData extends StatelessWidget {
-  final String? value;
-  final IconData? iconData;
-  final double? size;
-  final Color? color;
-  const CustomIconData({
-    Key? key,
-    this.value,
-    this.iconData,
-    this.size,
-    this.color,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        IconButton(
-          onPressed: () {},
-          icon: Icon(iconData!,
-              size: size!, color: color ?? kDarkColor86.withOpacity(0.6)),
-        ),
-        Text(value!,
-            style: TextStyle(
-                color: kDarkColor86.withOpacity(0.7),
-                fontSize: 16,
-                fontWeight: FontWeight.bold)),
       ],
     );
   }
