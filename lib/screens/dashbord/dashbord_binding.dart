@@ -5,6 +5,6 @@ import 'package:get/get.dart';
 class ProfilScreenBinding extends Bindings{
   @override
   void dependencies() {
-    Get.lazyPut(() => ProfilScreenController());
+    Get.lazyPut<ProfilScreenController>(() => ProfilScreenController());
   }
 }

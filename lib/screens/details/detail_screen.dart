@@ -188,7 +188,7 @@ class DetailScreen extends StatelessWidget {
                                     text: "1.1M ",
                                     style: TextStyle(
                                       color: kWhiteColor,
-                                      // fontSize: 16,
+                                      fontSize: 11,
                                       fontWeight: FontWeight.w600,
                                     ),
                                   ),
@@ -196,7 +196,7 @@ class DetailScreen extends StatelessWidget {
                                     text: "Téléchargements ",
                                     style: TextStyle(
                                       color: kWhiteColor,
-                                      // fontSize: 16,
+                                      fontSize: 11,
                                       fontWeight: FontWeight.w600,
                                     ),
                                   ),

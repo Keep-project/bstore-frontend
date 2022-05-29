@@ -1,5 +1,7 @@
 // ignore_for_file: avoid_print
 
+import 'package:bstore/components/custom_button.dart';
+import 'package:bstore/components/custom_text_field.dart';
 import 'package:bstore/core/app_colors.dart';
 import 'package:bstore/core/app_size.dart';
 import 'package:bstore/router/app_router.dart';
@@ -59,22 +61,44 @@ class LoginScreen extends StatelessWidget {
                           ),
                           const SizedBox(height: 20),
                           CustomTextField(
-                            hintText: "Entrez votre nom",
-                            helpText: "Nom",
+                            hintText: "Entrez votre email",
+                            helpText: "Email",
                             onChanged: (string) {
-                              print("Bonjour Jeni");
+                              print("Email");
                             },
                           ),
                           const SizedBox(height: kDefaultPadding),
                           CustomTextField(
-                            hintText: "Entrez votre prénom",
-                            helpText: "Prénom",
+                            hintText: "Entrez votre mot de passe",
+                            helpText: "Mot de passe",
                             onChanged: (string) {
-                              print("Bonjour je suis john");
+                              print("Mot de passe");
                             },
                           ),
                           const Spacer(),
                           CustomButton(onTap: (){Get.toNamed(AppRoutes.HOME);},),
+                          const Spacer(),
+                          Row(
+                            children: [
+                              const Text("Avez-vous un compte? ",
+                                style: TextStyle(
+                                  color: kDarkColor90,
+                                ),
+                              ),
+                              InkWell(
+                                onTap: () {Get.toNamed(AppRoutes.REGISTER);},
+                                child: const Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 10.0),
+                                  child: Text("Créer un compte",
+                                    style: TextStyle(
+                                      color: kOrangeColor,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                           const Spacer(),
                         ],
                       ),
@@ -89,95 +113,5 @@ class LoginScreen extends StatelessWidget {
   }
 }
 
-class CustomButton extends StatelessWidget {
-  final Function()? onTap;
-  const CustomButton({
-    Key? key, required this.onTap,
-  }) : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {onTap!();},
-      child: Container(
-        height: 50,
-        padding: const EdgeInsets.symmetric(
-            horizontal: kDefaultPadding / 2,
-            vertical: kDefaultPadding / 2),
-        decoration: BoxDecoration(
-            color: kOrangeColor,
-            borderRadius: BorderRadius.circular(8)),
-        child: const Center(
-          child: Text("Enregistrer",
-            style: TextStyle(
-              color: kWhiteColor,
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
 
-class CustomTextField extends StatelessWidget {
-  final String? hintText;
-  final String? helpText;
-  final Function(String text)? onChanged;
-  const CustomTextField({
-    Key? key,
-    this.hintText,
-    this.helpText,
-    this.onChanged,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          "$helpText",
-          style: const TextStyle(
-            fontSize: 16,
-            color: kDarkColor90,
-          ),
-        ),
-        const SizedBox(height: 3),
-        Container(
-          padding: const EdgeInsets.symmetric(
-              horizontal: kDefaultPadding / 2, vertical: kDefaultPadding / 2),
-          decoration: BoxDecoration(
-              color: Colors.grey.withOpacity(.4),
-              borderRadius: BorderRadius.circular(8)),
-          child: TextField(
-            onChanged: (string) {
-              onChanged!(string);
-            },
-            style: const TextStyle(
-              fontSize: 16,
-              color: kDarkColor90,
-            ),
-            decoration: InputDecoration(
-              enabledBorder: InputBorder.none,
-              disabledBorder: InputBorder.none,
-              focusedBorder: InputBorder.none,
-              isDense: true,
-              contentPadding: const EdgeInsets.only(
-                  left: kDefaultPadding / 2,
-                  top: kDefaultPadding / 4,
-                  right: kDefaultPadding / 2,
-                  bottom: kDefaultPadding / 4),
-              hintText: '$hintText',
-              hintStyle: TextStyle(
-                fontSize: 16,
-                color: kDarkColor90.withOpacity(0.4),
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}

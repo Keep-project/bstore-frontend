@@ -8,8 +8,8 @@ import 'package:bstore/router/app_router.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class RegisterScreen extends StatelessWidget {
-  const RegisterScreen({Key? key}) : super(key: key);
+class BookFormScreen extends StatelessWidget {
+  const BookFormScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +52,7 @@ class RegisterScreen extends StatelessWidget {
                         children: [
                           const SizedBox(height: 10),
                           const Text(
-                            "Créer un compte",
+                            "Ajouter un livre",
                             style: TextStyle(
                               color: kDarkColor86,
                               fontWeight: FontWeight.w900,

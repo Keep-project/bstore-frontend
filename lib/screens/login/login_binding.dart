@@ -6,6 +6,6 @@ import 'package:get/get.dart';
 class LoginScreenBinding extends Bindings{
   @override
   void dependencies() {
-    Get.lazyPut(() => LoginScreenController());
+    Get.lazyPut<LoginScreenController>(() => LoginScreenController());
   }
 }
