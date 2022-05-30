@@ -5,10 +5,12 @@ import 'package:bstore/components/custom_text_field.dart';
 import 'package:bstore/core/app_colors.dart';
 import 'package:bstore/core/app_size.dart';
 import 'package:bstore/router/app_router.dart';
+import 'package:bstore/screens/login/login.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends GetView<LoginScreenController> {
   const LoginScreen({Key? key}) : super(key: key);
 
   @override
@@ -17,95 +19,96 @@ class LoginScreen extends StatelessWidget {
       child: Scaffold(
         backgroundColor: kBlueDark,
         body: SingleChildScrollView(
-          child: Container(
-            padding: const EdgeInsets.all(0),
-            height: Get.height,
-            width: Get.width,
-            child: Column(
-              children: [
-                const Spacer(),
-                const Center(
-                  child: Text(
-                    "Logo",
-                    style: TextStyle(
-                      color: kWhiteColor,
-                      fontWeight: FontWeight.w900,
-                      fontSize: 50,
-                    ),
-                  ),
-                ),
-                const Spacer(),
-                Container(
-                    height: Get.height * 0.65,
-                    width: Get.width,
-                    decoration: const BoxDecoration(
-                      color: kWhiteColor,
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(kDefaultRadius * 4),
-                        bottomRight: Radius.circular(kDefaultRadius * 4),
+          child: GetBuilder<LoginScreenController>(
+            builder: (controller) {
+              return Container(
+                padding: const EdgeInsets.all(0),
+                height: Get.height,
+                width: Get.width,
+                child: Column(
+                  children: [
+                    const Spacer(),
+                    const Center(
+                      child: Text(
+                        "Logo",
+                        style: TextStyle(
+                          color: kWhiteColor,
+                          fontWeight: FontWeight.w900,
+                          fontSize: 50,
+                        ),
                       ),
                     ),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: kDefaultPadding * 1.5),
-                      child: Column(
-                        children: [
-                          const SizedBox(height: 10),
-                          const Text(
-                            "Connexion",
-                            style: TextStyle(
-                              color: kDarkColor86,
-                              fontWeight: FontWeight.w900,
-                              fontSize: 30,
-                            ),
+                    const Spacer(),
+                    Container(
+                        height: Get.height * 0.65,
+                        width: Get.width,
+                        decoration: const BoxDecoration(
+                          color: kWhiteColor,
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(kDefaultRadius * 4),
+                            bottomRight: Radius.circular(kDefaultRadius * 4),
                           ),
-                          const SizedBox(height: 20),
-                          CustomTextField(
-                            hintText: "Entrez votre email",
-                            helpText: "Email",
-                            onChanged: (string) {
-                              print("Email");
-                            },
-                          ),
-                          const SizedBox(height: kDefaultPadding),
-                          CustomTextField(
-                            hintText: "Entrez votre mot de passe",
-                            helpText: "Mot de passe",
-                            onChanged: (string) {
-                              print("Mot de passe");
-                            },
-                          ),
-                          const Spacer(),
-                          CustomButton(onTap: (){Get.toNamed(AppRoutes.HOME);},),
-                          const Spacer(),
-                          Row(
+                        ),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: kDefaultPadding * 1.5),
+                          child: Column(
                             children: [
-                              const Text("Avez-vous un compte? ",
+                              const SizedBox(height: 10),
+                              const Text(
+                                "Connexion",
                                 style: TextStyle(
-                                  color: kDarkColor90,
+                                  color: kDarkColor86,
+                                  fontWeight: FontWeight.w900,
+                                  fontSize: 30,
                                 ),
                               ),
-                              InkWell(
-                                onTap: () {Get.toNamed(AppRoutes.REGISTER);},
-                                child: const Padding(
-                                  padding: EdgeInsets.symmetric(vertical: 10.0),
-                                  child: Text("Créer un compte",
+                              const SizedBox(height: 20),
+                              CustomTextField(
+                                controller: controller.textEditingNom,
+                                hintText: "Entrez votre nom",
+                                helpText: "Nom",
+                              ),
+                              const SizedBox(height: kDefaultPadding),
+                              CustomTextField(
+                                controller: controller.textEditingPassword,
+                                hintText: "Entrez votre mot de passe",
+                                helpText: "Mot de passe",
+                                iconData: CupertinoIcons.eye_fill,
+                              ),
+                              const Spacer(),
+                              CustomButton(onTap: () async { await controller.login();},),
+                              const Spacer(),
+                              Row(
+                                children: [
+                                  const Text("Avez-vous un compte? ",
                                     style: TextStyle(
-                                      color: kOrangeColor,
-                                      fontWeight: FontWeight.w600,
+                                      color: kDarkColor90,
                                     ),
                                   ),
-                                ),
+                                  InkWell(
+                                    onTap: () {Get.toNamed(AppRoutes.REGISTER);},
+                                    child: const Padding(
+                                      padding: EdgeInsets.symmetric(vertical: 10.0),
+                                      child: Text("Créer un compte",
+                                        style: TextStyle(
+                                          color: kOrangeColor,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
+                              const Spacer(),
                             ],
                           ),
-                          const Spacer(),
-                        ],
-                      ),
-                    )),
-                const Spacer(flex: 2),
-              ],
-            ),
+                        )),
+                    const Spacer(flex: 2),
+                  ],
+                ),
+              );
+            }
           ),
         ),
       ),

@@ -61,28 +61,19 @@ class RegisterScreen extends StatelessWidget {
                           ),
                           
                           const SizedBox(height: 20),
-                          CustomTextField(
+                          const CustomTextField(
                             hintText: "Entrez votre nom",
                             helpText: "Nom",
-                            onChanged: (string) {
-                              print("Nom");
-                            },
                           ),
                           const SizedBox(height: 20),
-                          CustomTextField(
+                          const CustomTextField(
                             hintText: "Entrez votre email",
                             helpText: "Email",
-                            onChanged: (string) {
-                              print("Email");
-                            },
                           ),
                           const SizedBox(height: kDefaultPadding),
-                          CustomTextField(
+                          const CustomTextField(
                             hintText: "Entrez votre mot de passe",
                             helpText: "Mot de passe",
-                            onChanged: (string) {
-                              print("Mot de passe");
-                            },
                           ),
                           const Spacer(),
                           CustomButton(onTap: (){Get.toNamed(AppRoutes.LOGIN);},),

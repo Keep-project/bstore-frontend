@@ -6,12 +6,12 @@ import 'package:flutter/material.dart';
 class CustomTextField extends StatelessWidget {
   final String? hintText;
   final String? helpText;
-  final Function(String text)? onChanged;
+  final IconData? iconData;
+  final TextEditingController? controller;
   const CustomTextField({
     Key? key,
     this.hintText,
-    this.helpText,
-    this.onChanged,
+    this.helpText, this.controller, this.iconData,
   }) : super(key: key);
 
   @override
@@ -37,9 +37,7 @@ class CustomTextField extends StatelessWidget {
               color: Colors.grey.withOpacity(.102),
               borderRadius: BorderRadius.circular(8)),
           child: TextField(
-            onChanged: (string) {
-              onChanged!(string);
-            },
+            controller: controller!,
             style: const TextStyle(
               fontSize: 16,
               color: kDarkColor90,
