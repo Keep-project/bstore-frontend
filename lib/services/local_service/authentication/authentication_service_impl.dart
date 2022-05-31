@@ -24,5 +24,16 @@ class LocalAuthenticationServicesImpl implements LocalAuthenticationServices{
     preferences.setString(Constants.BSTORE_TOKEN, token);
     return true;
   }
+  
+  @override
+  Future<bool> hasAuthToken() async {
+    SharedPreferences preferences = await  SharedPreferences.getInstance();
+    if (preferences.getString(Constants.BSTORE_TOKEN) != null){
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
 
 }

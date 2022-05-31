@@ -1,14 +1,16 @@
 
+import 'package:bstore/models/request_data_model.dart/login_model.dart';
+import 'package:bstore/models/request_data_model.dart/register_model.dart';
+
 abstract class RemoteAuthenticationService {
   Future<void> login({
-    String? login,
-    String? password,
+    LoginRequestModel? loginReqModel,
     Function(dynamic data)? onLoginSuccess,
     Function(dynamic error)? onLoginError,
   });
 
   Future<void> register({
-    // RequestUserModel? userModel,
+    RegisterRequestModel? registerReqModel,
     Function(dynamic data)? onRegisterSuccess,
     Function(dynamic error)? onRegisterError,
   });
