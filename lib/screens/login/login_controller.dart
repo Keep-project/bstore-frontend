@@ -30,7 +30,7 @@ class LoginScreenController extends GetxController{
   Future verifyToken() async{
     if ( await _localAuth.hasAuthToken()){
       Future.delayed(const Duration(milliseconds: 1000), () {
-        Get.toNamed(AppRoutes.HOME);
+        Get.toNamed(AppRoutes.BOOKFORM);
       });
       
     }

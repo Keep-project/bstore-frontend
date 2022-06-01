@@ -16,7 +16,7 @@ class RegisterScreen extends GetView<RegisterScreenController> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: kBlueDark,
+        // backgroundColor: kBlueDark,
         body: GetBuilder<RegisterScreenController>(
           builder: (controller) {
             return SingleChildScrollView(
@@ -31,7 +31,7 @@ class RegisterScreen extends GetView<RegisterScreenController> {
                       child: Text(
                         "Logo",
                         style: TextStyle(
-                          color: kWhiteColor,
+                          color: kDarkColor86,
                           fontWeight: FontWeight.w900,
                           fontSize: 50,
                         ),
@@ -39,27 +39,22 @@ class RegisterScreen extends GetView<RegisterScreenController> {
                     ),
                     const Spacer(),
                     Container(
-                        height: Get.height * 0.68,
                         width: Get.width,
                         decoration: const BoxDecoration(
                           color: kWhiteColor,
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(kDefaultRadius * 4),
-                            bottomRight: Radius.circular(kDefaultRadius * 4),
-                          ),
                         ),
                         child: Container(
                           padding: const EdgeInsets.symmetric(
                               horizontal: kDefaultPadding * 1.5),
                           child: Column(
                             children: [
-                              const SizedBox(height: 10),
+                              const SizedBox(height: kDefaultPadding/2),
                               const Text(
                                 "Créer un compte",
                                 style: TextStyle(
                                   color: kDarkColor86,
                                   fontWeight: FontWeight.w900,
-                                  fontSize: 30,
+                                  fontSize: 26,
                                 ),
                               ),
                               
@@ -81,9 +76,9 @@ class RegisterScreen extends GetView<RegisterScreenController> {
                                 hintText: "Entrez votre mot de passe",
                                 helpText: "Mot de passe",
                               ),
-                              const Spacer(),
+                              const SizedBox(height: kDefaultPadding*3),
                               CustomButton(onTap: ()async{ await controller.register();},),
-                              const SizedBox(height: kDefaultPadding*.6),
+                              const SizedBox(height: kDefaultPadding),
                               Row(
                                 children: [
                                   const Text("Avez-vous un compte? ",
@@ -105,7 +100,6 @@ class RegisterScreen extends GetView<RegisterScreenController> {
                                   ),
                                 ],
                               ),
-                              const Spacer(),
                             ],
                           ),
                         )),

@@ -17,7 +17,6 @@ class LoginScreen extends GetView<LoginScreenController> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: kBlueDark,
         body: SingleChildScrollView(
           child: GetBuilder<LoginScreenController>(
             builder: (controller) {
@@ -32,7 +31,7 @@ class LoginScreen extends GetView<LoginScreenController> {
                       child: Text(
                         "Logo",
                         style: TextStyle(
-                          color: kWhiteColor,
+                          color: kDarkColor86,
                           fontWeight: FontWeight.w900,
                           fontSize: 50,
                         ),
@@ -60,7 +59,7 @@ class LoginScreen extends GetView<LoginScreenController> {
                                 style: TextStyle(
                                   color: kDarkColor86,
                                   fontWeight: FontWeight.w900,
-                                  fontSize: 30,
+                                  fontSize: 26,
                                 ),
                               ),
                               const SizedBox(height: 20),
@@ -76,9 +75,9 @@ class LoginScreen extends GetView<LoginScreenController> {
                                 helpText: "Mot de passe",
                                 iconData: CupertinoIcons.eye_fill,
                               ),
-                              const Spacer(),
+                             const SizedBox(height: kDefaultPadding*3),
                               CustomButton(onTap: () async { await controller.login();},),
-                              const Spacer(),
+                              const SizedBox(height: kDefaultPadding),
                               Row(
                                 children: [
                                   const Text("Avez-vous un compte? ",
@@ -100,7 +99,6 @@ class LoginScreen extends GetView<LoginScreenController> {
                                   ),
                                 ],
                               ),
-                              const Spacer(),
                             ],
                           ),
                         )),

@@ -2,6 +2,7 @@
 
 
 import 'package:bstore/router/app_router.dart';
+import 'package:bstore/screens/book_form/book_form.dart';
 import 'package:bstore/screens/dashbord/dashbord.dart';
 import 'package:bstore/screens/details/detail.dart';
 import 'package:bstore/screens/home/home.dart';
@@ -42,6 +43,11 @@ class AppPages{
         name: AppRoutes.SEARCH,
         page: () => const SearchScreen(),
         binding: SearchBinding()),
+    
+    GetPage(
+        name: AppRoutes.BOOKFORM,
+        page: () => const BookFormScreen(),
+        binding: BookFormScreenBinding()),
   ];
 
 }

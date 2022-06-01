@@ -7,4 +7,5 @@ class AppRoutes{
   static const String DETAILS = "/detail";
   static const String DASHBORD = "/dashbord";
   static const String SEARCH = "/search";
+  static const String BOOKFORM = "/book_form";
 }
