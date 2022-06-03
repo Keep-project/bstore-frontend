@@ -8,10 +8,12 @@ class CustomTextField extends StatelessWidget {
   final String? helpText;
   final IconData? iconData;
   final TextEditingController? controller;
+  final int? maxLines;
+  final int? minLines;
   const CustomTextField({
     Key? key,
     this.hintText,
-    this.helpText, this.controller, this.iconData,
+    this.helpText, this.controller, this.iconData, this.maxLines, this.minLines,
   }) : super(key: key);
 
   @override
@@ -41,6 +43,8 @@ class CustomTextField extends StatelessWidget {
               ),
               borderRadius: BorderRadius.circular(8)),
           child: TextField(
+            minLines: minLines ?? 1,
+            maxLines: maxLines ?? 1,
             controller: controller!,
             style: const TextStyle(
               fontSize: 16,

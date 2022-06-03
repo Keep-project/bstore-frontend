@@ -19,7 +19,7 @@ class LoginScreenController extends GetxController{
 
   @override 
   void onInit() async {
-    // await verifyToken();
+    await verifyToken();
     super.onInit();
   }
   // @override

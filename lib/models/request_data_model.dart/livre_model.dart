@@ -1,7 +1,8 @@
 import 'dart:convert';
+import 'dart:io';
 
 class LivreRequestModel {
-  LivreRequestModel({
+  LivreRequestModel({this.fichier,
     this.titre,
     this.description,
     this.nbPages,
@@ -10,6 +11,7 @@ class LivreRequestModel {
     this.editeur,
     this.image,
     this.categorie,
+    this.date_pub, 
   });
 
   final String? titre;
@@ -18,8 +20,10 @@ class LivreRequestModel {
   final String? langue;
   final String? auteur;
   final String? editeur;
-  final String? image;
+  File? image;
+  final dynamic fichier;
   final int? categorie;
+  final String? date_pub;
 
 
 
@@ -30,8 +34,10 @@ class LivreRequestModel {
         'langue': langue ?? '',
         'auteur': auteur ?? '',
         'editeur': editeur ?? '',
-        'image': image ?? '',
+        'image': image,
+        'fichier': fichier,
         'categorie': categorie ?? 0,
+        'date_pub': date_pub,
       };
 
       String toJson() => json.encode(toMap());

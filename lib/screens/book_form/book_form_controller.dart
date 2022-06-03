@@ -1,13 +1,176 @@
+// ignore_for_file: avoid_print
+
+
+import 'dart:io';
+import 'package:bstore/services/remote_service/livre/livre_service.dart';
+import 'package:bstore/services/remote_service/livre/livre_service_impl.dart';
+import 'package:dio/dio.dart' as client;
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
 
-class BookFormScreenController extends GetxController{
-  // @override
-  // void onInit() {
-  //   super.onInit();
-  // }
+class BookFormScreenController extends GetxController {
 
-  // @override
-  // void dispose() {
-  //   super.dispose();
-  // }
+  final LivreService _livreService = LivreServiceImpl();
+
+  final TextEditingController textEditingTitre = TextEditingController();
+  final TextEditingController textEditingDescription = TextEditingController();
+  final TextEditingController textEditingNombrePage = TextEditingController();
+  final TextEditingController textEditingAuteur = TextEditingController();
+  final TextEditingController textEditingEditeur = TextEditingController();
+  final TextEditingController textEditingLangue = TextEditingController();
+
+  String selectedCategory = "Histoire";
+  String selectedLanguage = "Français";
+
+  DateTime datePub = DateTime.now();
+  String datePubToString = '09/05/2007';
+
+  final picker = ImagePicker();
+  var imageFile;
+  String photo = "";
+
+  PlatformFile? _file;
+  final GlobalKey<ScaffoldState> _scaffoldstate = GlobalKey<ScaffoldState>();
+
+  bool? _isLoading = false;
+  String? _fileFullPath;
+  String? progress;
+  client.Dio? dio;
+
+  @override
+  void onInit() {
+    dio = client.Dio();
+    super.onInit();
+  }
+
+  List<Map<String, dynamic>> categories = [
+    {"id": 1, "libelle": "Histoire"},
+    {"id": 2, "libelle": "Appartements modernes"},
+    {"id": 3, "libelle": "chambres simples"},
+    {"id": 4, "libelle": "Chambres modernes"},
+    {"id": 5, "libelle": "Studios simples"},
+    {"id": 6, "libelle": "Studios modernes"},
+    {"id": 7, "libelle": "Magasin"},
+    {"id": 8, "libelle": "Boutique"},
+    {"id": 9, "libelle": "Motel"},
+    {"id": 10, "libelle": "Snack"},
+  ];
+
+  List<Map<String, dynamic>> langues = [
+    {"id": 1, "libelle": "Français"},
+    {"id": 2, "libelle": "Anglais"},
+  ];
+
+  void onChangeCategory(dynamic data) {
+    selectedCategory = data;
+    update();
+  }
+
+  void onChangeLanguage(dynamic data) {
+    selectedLanguage = data;
+    update();
+  }
+
+  @override
+  void dispose() {
+    textEditingTitre.dispose();
+    textEditingDescription.dispose();
+    textEditingNombrePage.dispose();
+    textEditingAuteur.dispose();
+    textEditingEditeur.dispose();
+    textEditingLangue.dispose();
+    super.dispose();
+  }
+
+  Future chooseImage() async {
+    XFile? pickedFile = await picker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 50,
+    );
+    if (pickedFile != null) {
+      imageFile = File(pickedFile.path);
+      // var imageBytes = imageFile.readAsBytesSync();
+      // var encoded = base64Encode(imageBytes);
+      // photo = "data:image/png;base64, $encoded";
+      update();
+    }
+  }
+
+  Future getFile() async {
+    final result = await FilePicker.platform.pickFiles();
+    if (result != null) {
+      final file = result.files.first;
+      _file = file;
+      print("Name : ${file.name}");
+      print("Bytes : ${file.bytes}");
+      print("Size : ${file.size}");
+      print("Extension : ${file.extension}");
+      print("Path: ${file.path}");
+      print("Base name: ${basename(file.path!)}");
+
+    }
+  }
+
+  Future _downloadAndSaveFileToStorage(
+    BuildContext context, String url, String filename) async {
+    try {
+      final dir = await getApplicationDocumentsDirectory();
+      final file = File("${dir.path}/$filename");
+      await dio!.download(url, file.path, onReceiveProgress: (rec, total) {
+        _isLoading = true;
+
+        progress = "${((rec / total) * 100).toStringAsFixed(0)} %";
+      });
+      _fileFullPath = file.path;
+    } catch (e) {
+      print(e);
+    }
+
+    _isLoading = false;
+  }
+
+
+  Future saveBook() async {
+
+    client.FormData formData = client.FormData.fromMap({
+
+      "titre": textEditingTitre.text.trim(),
+      "description": textEditingDescription.text.trim(),
+      "nbpages": int.parse(textEditingNombrePage.text.trim()),
+      "langue": selectedLanguage,
+      "image": await client.MultipartFile.fromFile(imageFile.path, filename: basename(imageFile.path)),
+      "auteur": textEditingAuteur.text.trim(),
+      "editeur": textEditingEditeur.text.trim(),
+      "categorie": 1,
+      "fichier": await client.MultipartFile.fromFile(_file!.path!, filename: basename(_file!.path!)),
+      "datepub": datePub
+
+    });
+
+    print("Afficher");
+
+    await _livreService.saveLivre(
+      livreModel: formData,
+      onSuccess: (data){
+        print("================= Success =====================");
+        print(data);
+        print("================================================");
+      },
+      onError: (error){
+        print("================= Error =====================");
+        print(error.response!.statusCode);
+        if (error.response!.statusCode == 401){
+          Get.snackbar(
+          "Error", "Votre token est invalide",
+        );
+        }
+        print("================================================");
+      }
+    );
+
+  }
 }
