@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print
+// ignore_for_file: avoid_print, prefer_typing_uninitialized_variables
 
 
 import 'dart:io';
@@ -34,18 +34,13 @@ class BookFormScreenController extends GetxController {
   String photo = "";
 
   PlatformFile? _file;
-  final GlobalKey<ScaffoldState> _scaffoldstate = GlobalKey<ScaffoldState>();
+  // final GlobalKey<ScaffoldState> _scaffoldstate = GlobalKey<ScaffoldState>();
+  
 
-  bool? _isLoading = false;
-  String? _fileFullPath;
-  String? progress;
-  client.Dio? dio;
-
-  @override
-  void onInit() {
-    dio = client.Dio();
-    super.onInit();
-  }
+  // @override
+  // void onInit() {
+  //   super.onInit();
+  // }
 
   List<Map<String, dynamic>> categories = [
     {"id": 1, "libelle": "Histoire"},
@@ -101,7 +96,10 @@ class BookFormScreenController extends GetxController {
   }
 
   Future getFile() async {
-    final result = await FilePicker.platform.pickFiles();
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ["pdf", "docx", "pptx"]
+    );
     if (result != null) {
       final file = result.files.first;
       _file = file;
@@ -113,24 +111,6 @@ class BookFormScreenController extends GetxController {
       print("Base name: ${basename(file.path!)}");
 
     }
-  }
-
-  Future _downloadAndSaveFileToStorage(
-    BuildContext context, String url, String filename) async {
-    try {
-      final dir = await getApplicationDocumentsDirectory();
-      final file = File("${dir.path}/$filename");
-      await dio!.download(url, file.path, onReceiveProgress: (rec, total) {
-        _isLoading = true;
-
-        progress = "${((rec / total) * 100).toStringAsFixed(0)} %";
-      });
-      _fileFullPath = file.path;
-    } catch (e) {
-      print(e);
-    }
-
-    _isLoading = false;
   }
 
 
@@ -146,14 +126,14 @@ class BookFormScreenController extends GetxController {
       "auteur": textEditingAuteur.text.trim(),
       "editeur": textEditingEditeur.text.trim(),
       "categorie": 1,
+      "extension": _file!.extension,
       "fichier": await client.MultipartFile.fromFile(_file!.path!, filename: basename(_file!.path!)),
-      "datepub": datePub
+      "datepub": datePub.toIso8601String()
 
     });
 
-    print("Afficher");
 
-    await _livreService.saveLivre(
+    await _livreService.saveBook(
       livreModel: formData,
       onSuccess: (data){
         print("================= Success =====================");

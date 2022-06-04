@@ -22,15 +22,17 @@ class LoginScreenController extends GetxController{
     await verifyToken();
     super.onInit();
   }
-  // @override
-  // void dispose() {
-  //   super.dispose();
-  // }
+  @override
+  void dispose() {
+    textEditingNom.dispose();
+    textEditingPassword.dispose();
+    super.dispose();
+  }
 
   Future verifyToken() async{
     if ( await _localAuth.hasAuthToken()){
       Future.delayed(const Duration(milliseconds: 1000), () {
-        Get.toNamed(AppRoutes.BOOKFORM);
+        Get.toNamed(AppRoutes.HOME);
       });
       
     }
@@ -49,9 +51,8 @@ class LoginScreenController extends GetxController{
       onLoginSuccess: (data) async{
         textEditingNom.clear();
         textEditingPassword.clear();
-        print("Login success ${data.access}");
         await _localAuth.saveToken(data.access);
-        
+        Get.toNamed(AppRoutes.HOME);
       },
       onLoginError: (error){
         print("============ Login =============");

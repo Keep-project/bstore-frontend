@@ -215,7 +215,7 @@ class CustomIconData extends StatelessWidget {
           onPressed: () {},
           icon: Icon(iconData!, size: size!, color: color ?? kDarkColor86.withOpacity(0.6)),
         ),
-        Text(value!, style: TextStyle(color:  kDarkColor86.withOpacity(0.7), fontSize: 10)),
+        Text(value!, style: TextStyle(color:  kDarkColor86.withOpacity(0.7), fontSize: 16)),
       ],
     );
   }

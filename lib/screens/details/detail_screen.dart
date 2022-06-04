@@ -5,6 +5,7 @@ import 'package:bstore/components/head_title.dart';
 import 'package:bstore/components/popular_book_item.dart';
 import 'package:bstore/core/app_colors.dart';
 import 'package:bstore/core/app_size.dart';
+import 'package:bstore/core/app_state.dart';
 import 'package:bstore/router/app_router.dart';
 import 'package:bstore/screens/details/components/icon_label.dart';
 import 'package:bstore/screens/details/detail.dart';
@@ -24,7 +25,15 @@ class DetailScreen extends GetView<DetailScreenController> {
         body: GetBuilder<DetailScreenController>(
           builder: (controller) {
             return SingleChildScrollView(
-              child: Column(
+              child: controller.loadingStatus == LoadingStatus.searching ? Container(
+                padding: const EdgeInsets.all(20),
+                child: const Center(
+                  child: CircularProgressIndicator(
+                    color: Colors.red,
+                  )
+                ),
+              ):
+              Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Container(
@@ -52,12 +61,12 @@ class DetailScreen extends GetView<DetailScreenController> {
                                 height: Get.height * 0.63 - 30,
                                 width: double.infinity,
                                 clipBehavior: Clip.antiAlias,
-                                decoration: const BoxDecoration(
+                                decoration: BoxDecoration(
                                   color: Colors.black,
                                   image: DecorationImage(
-                                    fit: BoxFit.cover,
-                                    image: AssetImage(
-                                        "assets/images/femme-de-pouvoir.jpg"),
+                                    fit: BoxFit.fill,
+                                   image: NetworkImage(
+                                        controller.livre.image!),
                                   ),
                                 ),
                               ),
@@ -73,10 +82,10 @@ class DetailScreen extends GetView<DetailScreenController> {
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(8),
                                   color: Colors.black,
-                                  image: const DecorationImage(
-                                    fit: BoxFit.cover,
-                                    image: AssetImage(
-                                        "assets/images/femme-de-pouvoir.jpg"),
+                                  image:  DecorationImage(
+                                    fit: BoxFit.fill,
+                                    image: NetworkImage(
+                                        controller.livre.image!),
                                   ),
                                 ),
                               ),
@@ -86,32 +95,30 @@ class DetailScreen extends GetView<DetailScreenController> {
                               right: 0,
                               left: 0,
                               child: Column(children: [
-                                const Text(
-                                  "Leurs figures",
+                                Text(controller.livre.titre!.toString().capitalizeFirst!,
                                   textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontSize: 18,
+                                  style: const TextStyle(
+                                    fontSize: 14,
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),
-                                const Opacity(
+                                Opacity(
                                   opacity: 0.6,
-                                  child: Text(
-                                    "Jacques Verges",
+                                  child: Text(controller.livre.auteur!.toString(),
                                     textAlign: TextAlign.center,
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       fontSize: 14,
                                     ),
                                   ),
                                 ),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
-                                  children: const [
+                                  children: [
                                     CustomIconData(
                                         color: kOrangeColor,
                                         size: 26,
                                         iconData: CupertinoIcons.heart_fill,
-                                        value: "100"),
+                                        value: controller.livre.likes!.toString()),
                                   ],
                                 ),
                               ]),
@@ -133,16 +140,16 @@ class DetailScreen extends GetView<DetailScreenController> {
                                 ),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: const [
+                                  children: [
                                     IconAndLabel(
                                         iconData: Icons.language,
-                                        libelle: "Français"),
+                                        libelle: controller.livre.langue!.toString()),
                                     IconAndLabel(
                                         iconData: CupertinoIcons.book_fill,
-                                        libelle: "120 pages"),
+                                        libelle: "${controller.livre.nbpages!} pages"),
                                     IconAndLabel(
                                         iconData: CupertinoIcons.chat_bubble_2_fill,
-                                        libelle: "10",
+                                        libelle: "${controller.livre.commentaires!.length}",
                                         size: 30),
                                   ],
                                 ),
@@ -164,8 +171,7 @@ class DetailScreen extends GetView<DetailScreenController> {
                         const SizedBox(height: 40),
                         const HeadTitle(title: "Description"),
                         const SizedBox(height: kDefaultPadding - 4),
-                        Text(
-                          "Lorem ipsum dolor sit amet consectetur adipisicing elit. Officia placeat beatae deleniti perferendis laboriosam modi.Architecto ad itaque quidem odio fugiat quia odit perferendis iure incidunt, numquam, tempore, natus similique!",
+                        Text(controller.livre.description!,
                           style: TextStyle(
                             color: kDarkColor86.withOpacity(0.7),
                             fontSize: 15,
@@ -185,20 +191,20 @@ class DetailScreen extends GetView<DetailScreenController> {
                                 ),
                                 child: Center(
                                   child: RichText(
-                                    text: const TextSpan(children: [
+                                    text: TextSpan(children: [
                                       TextSpan(
-                                        text: "1.1M ",
-                                        style: TextStyle(
+                                        text: "${controller.livre.telecharges!} ",
+                                        style: const TextStyle(
                                           color: kWhiteColor,
                                           fontSize: 11,
                                           fontWeight: FontWeight.w600,
                                         ),
                                       ),
-                                      TextSpan(
+                                      const TextSpan(
                                         text: "Téléchargements ",
                                         style: TextStyle(
                                           color: kWhiteColor,
-                                          fontSize: 10,
+                                          fontSize: 11,
                                           fontWeight: FontWeight.w600,
                                         ),
                                       ),
@@ -206,28 +212,33 @@ class DetailScreen extends GetView<DetailScreenController> {
                                   ),
                                 ),
                               ),
-                              Container(
-                                height: 45,
-                                width: Get.width / 2 - 32,
-                                decoration: BoxDecoration(
-                                  color: kGreenColor,
-                                  borderRadius: BorderRadius.circular(6),
-                                ),
-                                child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: const [
-                                      Text(
-                                        "Télécharger",
-                                        style: TextStyle(
-                                          color: kWhiteColor,
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.w600,
+                              GestureDetector(
+                                onTap: () async {
+                                  await controller.downloadAndSaveFileToStorage();
+                                },
+                                child: Container(
+                                  height: 45,
+                                  width: Get.width / 2 - 32,
+                                  decoration: BoxDecoration(
+                                    color: kGreenColor,
+                                    borderRadius: BorderRadius.circular(6),
+                                  ),
+                                  child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: const [
+                                        Text(
+                                          "Télécharger",
+                                          style: TextStyle(
+                                            color: kWhiteColor,
+                                            fontSize: 11,
+                                            fontWeight: FontWeight.w600,
+                                          ),
                                         ),
-                                      ),
-                                      SizedBox(width: 8),
-                                      Icon(CupertinoIcons.cloud_download_fill,
-                                          color: kWhiteColor, size: 26)
-                                    ]),
+                                        SizedBox(width: 8),
+                                        Icon(CupertinoIcons.cloud_download_fill,
+                                            color: kWhiteColor, size: 26)
+                                      ]),
+                                ),
                               ),
                             ]),
                         const SizedBox(height: 30),
@@ -278,7 +289,7 @@ class DetailScreen extends GetView<DetailScreenController> {
                               ),
                             ),
                           ]),
-                          Row(children: <Widget>[
+                          controller.comments.isNotEmpty ? Row(children: <Widget>[
                             IconButton(
                                 onPressed: () {
                                   controller.onPreviousChangedPage();
@@ -293,10 +304,10 @@ class DetailScreen extends GetView<DetailScreenController> {
                                 padding: const EdgeInsets.all(0),
                                 icon: Icon(CupertinoIcons.chevron_forward,
                                     color: controller.currentIndexPage == controller.comments.length -1  ? kOrangeColor.withOpacity(.4): kOrangeColor, size: 20)),
-                          ]),
+                          ]): Container(),
                         ]),
 
-                        Align(
+                         controller.comments.isNotEmpty ? Align(
                           alignment: Alignment.centerLeft,
                           child: ConstrainedBox(
                             constraints: const BoxConstraints(
@@ -315,7 +326,7 @@ class DetailScreen extends GetView<DetailScreenController> {
                                 itemBuilder: (context, index) => controller.comments[index]),
                             ),
                           ),
-                        ),
+                        ): Container(),
                         const SizedBox(height: 30),
                         Row(children: [
                           const HeadTitle(
@@ -341,17 +352,17 @@ class DetailScreen extends GetView<DetailScreenController> {
                               )),
                         ]),
                         const SizedBox(height: 20),
-                        SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            children: <Widget>[
-                              ...List.generate(
-                                50,
-                                (index) => const BookItem(),
-                              )
-                            ],
-                          ),
-                        ),
+                        // SingleChildScrollView(
+                        //   scrollDirection: Axis.horizontal,
+                        //   child: Row(
+                        //     children: <Widget>[
+                        //       ...List.generate(
+                        //         50,
+                        //         (index) => const BookItem(),
+                        //       )
+                        //     ],
+                        //   ),
+                        // ),
                         const SizedBox(height: 40),
                       ],
                     ),
@@ -390,9 +401,11 @@ class DetailScreen extends GetView<DetailScreenController> {
         const SizedBox(
           width: 5,
         ),
-        const Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Icon(Icons.share_outlined, color: kDarkColor90, size: 26),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: GestureDetector(
+            onTap: (){Get.toNamed(AppRoutes.BOOKFORM);},
+            child: const Icon(Icons.share_outlined, color: kDarkColor90, size: 26)),
 
         ),
         const SizedBox(
