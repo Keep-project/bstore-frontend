@@ -14,6 +14,7 @@ import 'package:path_provider/path_provider.dart' as p;
 
 class DetailScreenController extends GetxController {
   LoadingStatus loadingStatus = LoadingStatus.initial;
+  LoadingStatus downloadStatus = LoadingStatus.initial;
   final LivreService _serviceLivre = LivreServiceImpl();
 
   Livre livre = Livre();
@@ -33,18 +34,41 @@ class DetailScreenController extends GetxController {
     super.onInit();
   }
 
+
+    Future likeBook() async {
+    await _serviceLivre.likeBook(
+      idLivre: livre.id!,
+      onSuccess:(data){
+        livre.is_like = data['results']['is_like'];
+        if (data['results']['is_like']){
+          livre.likes = livre.likes! +1;
+        }
+        else{livre.likes = livre.likes! -1;}
+        update();
+      },
+      onError:(error){
+        print("=============== Home error ================");
+        print(error);
+        print("==========================================");
+      }
+    );
+
+  }
+
   Future downloadBook() async {
+    downloadStatus = LoadingStatus.searching;
     await _serviceLivre.downloadBook(
       idLivre: livre.id!,
       onSuccess: (data) {
-        livre.telecharges = livre.telecharges! + 1; 
-        print(data);
+        livre.telecharges = livre.telecharges! + 1;
+        downloadStatus = LoadingStatus.completed;
         update();
       },
       onError: (error) {
         print("======================= Détail error =====================");
         print(error.response!.statusCode);
         print("==========================================================");
+        downloadStatus = LoadingStatus.failed;
         update();
       },
     );

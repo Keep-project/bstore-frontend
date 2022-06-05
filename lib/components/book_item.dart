@@ -11,12 +11,13 @@ class BookItem extends StatelessWidget {
   final double? marginRight;
   final dynamic controller;
   final Livre? livre;
+  final Function()? onTap;
   const BookItem({
     Key? key,
     this.width,
     this.marginRight,
     this.controller,
-    this.livre,
+    this.livre, this.onTap,
   }) : super(key: key);
 
   @override
@@ -48,6 +49,7 @@ class BookItem extends StatelessWidget {
               height: 200,
               width: double.maxFinite,
               decoration: BoxDecoration(
+                color: Colors.grey.withOpacity(.17),
                   image:  DecorationImage(
                       fit: BoxFit.fill,
                       image: NetworkImage(livre!.image!)),
@@ -61,8 +63,8 @@ class BookItem extends StatelessWidget {
                   Opacity(
                       opacity: 0.6,
                       child: InkWell(
-                        onTap: () { print("Liker");},
-                        child: const Icon(CupertinoIcons.heart,
+                        onTap: () { onTap!();},
+                        child: Icon(livre!.likes! > 0 ? CupertinoIcons.heart_fill : CupertinoIcons.heart,
                             color: kOrangeColor, size: 30),
                       )),
                   const SizedBox(

@@ -6,6 +6,7 @@ import 'package:bstore/components/popular_book_item.dart';
 import 'package:bstore/components/search_bar.dart';
 import 'package:bstore/core/app_colors.dart';
 import 'package:bstore/core/app_size.dart';
+import 'package:bstore/core/app_state.dart';
 import 'package:bstore/router/app_router.dart';
 import 'package:bstore/screens/home/components/category_item.dart';
 import 'package:bstore/screens/home/components/home_banner.dart';
@@ -32,10 +33,10 @@ class HomeScreen extends GetView<HomeScreenController> {
                           child: Column(
                             children: [
                               const SizedBox(height: 10),
-                              const Padding(
-                                padding: EdgeInsets.symmetric(
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
                                     horizontal: kDefaultPadding),
-                                child: SearchBar(),
+                                child: SearchBar(controller: controller.searchTextEditingController),
                               ),
                               const SizedBox(height: 12),
                               Expanded(
@@ -50,19 +51,27 @@ class HomeScreen extends GetView<HomeScreenController> {
                                               title: "Explorer par thèmes"),
                                         ),
                                         const SizedBox(height: 12),
-                                        Padding(
+                                        controller.categoriesListStatus == LoadingStatus.searching ?
+                                        Container(
+                                          height: 60,
+                                          width: double.infinity,
+                                          padding: const EdgeInsets.all(0),
+                                          child: const Center(
+                                            child: CircularProgressIndicator(color: kOrangeColor),
+                                          ),
+                                        )
+                                        : Padding(
                                           padding: const EdgeInsets.symmetric(
                                               horizontal: kDefaultPadding),
                                           child: SingleChildScrollView(
                                             scrollDirection: Axis.horizontal,
                                             child: Row(
-                                              children: const <Widget>[
-                                                CategoryItem(title: "Histoire"),
-                                                CategoryItem(title: "Geographie"),
-                                                CategoryItem(title: "Philosophie"),
-                                                CategoryItem(title: "Romans"),
-                                                CategoryItem(title: "Politique"),
-                                                CategoryItem(title: "Economie"),
+                                              children: <Widget>[
+
+                                                ...List.generate(
+                                                  controller.listCategories.length,
+                                                  (index) => CategoryItem(category: controller.listCategories[index]),
+                                                ),
                                               ],
                                             ),
                                           ),
@@ -73,12 +82,12 @@ class HomeScreen extends GetView<HomeScreenController> {
                                               horizontal: kDefaultPadding),
                                           child: Row(children: [
                                             HeadTitle(
-                                              title: "Livres récents(${controller.listLivre.length})",
+                                              title: "Livres récents(${controller.listLivre.length.toString().padLeft(2, '0')})",
                                             ),
                                             const Spacer(),
                                             InkWell(
                                                 onTap: () {
-                                                  Get.toNamed(AppRoutes.SEARCH);
+                                                  Get.toNamed(AppRoutes.SEARCH, arguments: {'id': 'liste', 'message': "Liste des livres"});
                                                 },
                                                 child: const Opacity(
                                                   opacity: 0.5,
@@ -98,7 +107,16 @@ class HomeScreen extends GetView<HomeScreenController> {
                                           ]),
                                         ),
                                         const SizedBox(height: 20),
-                                        Padding(
+                                        controller.recentBookStatus == LoadingStatus.searching ?
+                                        Container(
+                                          height: 155,
+                                          width: double.infinity,
+                                          padding: const EdgeInsets.all(0),
+                                          child: const Center(
+                                            child: CircularProgressIndicator(color: kOrangeColor),
+                                          ),
+                                        )
+                                        : Padding(
                                           padding: const EdgeInsets.symmetric(
                                               horizontal: kDefaultPadding),
                                           child: SingleChildScrollView(
@@ -108,6 +126,7 @@ class HomeScreen extends GetView<HomeScreenController> {
                                                 ...List.generate(
                                                   controller.listLivre.length, 
                                                 (index) => BookItem(
+                                                  onTap: ()async{ await controller.likeBook(index);},
                                                   controller: controller,
                                                   livre: controller.listLivre[index],
                                                 ),)

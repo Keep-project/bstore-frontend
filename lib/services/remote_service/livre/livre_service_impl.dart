@@ -1,5 +1,6 @@
 import 'package:bstore/core/api_library.dart';
 import 'package:bstore/core/constants.dart';
+import 'package:bstore/models/response_data_model.dart/category_model.dart';
 import 'package:bstore/models/response_data_model.dart/livre_model.dart';
 import 'package:bstore/models/response_data_model.dart/livre_detail_model.dart';
 import 'package:bstore/services/local_service/authentication/authentication_service.dart';
@@ -30,10 +31,11 @@ class LivreServiceImpl implements LivreService {
 
   @override
   Future listBooks(
-      {Function(dynamic data)? onSuccess,
+      {String? url,
+      Function(dynamic data)? onSuccess,
       Function(dynamic date)? onError}) async {
     ApiRequest(
-      url: "${Constants.API_URL}/book/",
+      url: url ?? "${Constants.API_URL}/book/",
       data: {},
       token: await _localAuth.getToken(),
     ).get(onSuccess: (data) {
@@ -67,13 +69,67 @@ class LivreServiceImpl implements LivreService {
   Future downloadBook(
       {int? idLivre,
       Function(dynamic data)? onSuccess,
-      Function(dynamic date)? onError})async {
+      Function(dynamic date)? onError}) async {
     ApiRequest(
       url: "${Constants.API_URL}/book/$idLivre/telecharge/",
       data: {},
       token: await _localAuth.getToken(),
     ).post(onSuccess: (data) {
       onSuccess!(data);
+    }, onError: (error) {
+      if (error != null) {
+        onError!(error);
+      }
+    });
+  }
+
+  @override
+  Future likeBook(
+      {int? idLivre,
+      Function(dynamic data)? onSuccess,
+      Function(dynamic date)? onError}) async {
+    ApiRequest(
+      url: "${Constants.API_URL}/book/$idLivre/like/",
+      data: {},
+      token: await _localAuth.getToken(),
+    ).post(onSuccess: (data) {
+      onSuccess!(data);
+    }, onError: (error) {
+      if (error != null) {
+        onError!(error);
+      }
+    });
+  }
+
+  @override
+  Future categoriesList(
+      {Function(dynamic data)? onSuccess,
+      Function(dynamic date)? onError}) async {
+    ApiRequest(
+      url: "${Constants.API_URL}/book/categorie/",
+      data: {},
+      token: await _localAuth.getToken(),
+    ).get(onSuccess: (data) {
+      onSuccess!(data['results']);
+    }, onError: (error) {
+      if (error != null) {
+        onError!(error);
+      }
+    });
+  }
+
+  @override
+  Future getCategoriesById({
+    int? idCategory,
+    Function(dynamic data)? onSuccess,
+    Function(dynamic date)? onError,
+  }) async {
+    ApiRequest(
+      url: "${Constants.API_URL}/book/categorie/$idCategory",
+      data: {},
+      token: await _localAuth.getToken(),
+    ).get(onSuccess: (data) {
+      onSuccess!(CategorieResponseModel.fromMap(data));
     }, onError: (error) {
       if (error != null) {
         onError!(error);

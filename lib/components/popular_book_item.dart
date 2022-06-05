@@ -199,11 +199,12 @@ class CustomIconData extends StatelessWidget {
   final IconData? iconData;
   final double? size;
   final Color? color;
+  final Function()? onPressed;
   const CustomIconData({
     Key? key,
     this.value,
     this.iconData, this.size,
-    this.color,
+    this.color, this.onPressed,
   }) : super(key: key);
 
   @override
@@ -212,7 +213,7 @@ class CustomIconData extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         IconButton(
-          onPressed: () {},
+          onPressed: () { onPressed!();},
           icon: Icon(iconData!, size: size!, color: color ?? kDarkColor86.withOpacity(0.6)),
         ),
         Text(value!, style: TextStyle(color:  kDarkColor86.withOpacity(0.7), fontSize: 16)),

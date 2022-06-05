@@ -42,7 +42,7 @@ class Livre {
   final int? proprietaire;
   final String? description;
   final int? nbpages;
-  final int? likes;
+  int? likes;
   int? telecharges;
   final int? nbcommentaires;
   final List<Commentaire>? commentaires;

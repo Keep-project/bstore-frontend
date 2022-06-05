@@ -6,6 +6,7 @@ abstract class LivreService {
   });
 
   Future listBooks({
+    String? url,
     Function(dynamic data)? onSuccess,
     Function(dynamic date)? onError,
   });
@@ -21,4 +22,22 @@ abstract class LivreService {
     Function(dynamic data)? onSuccess,
     Function(dynamic date)? onError,
   });
+  Future likeBook({
+    int? idLivre,
+    Function(dynamic data)? onSuccess,
+    Function(dynamic date)? onError,
+  });
+
+  Future categoriesList({
+    Function(dynamic data)? onSuccess,
+    Function(dynamic date)? onError,
+  });
+
+  Future getCategoriesById({
+    int? idCategory,
+    Function(dynamic data)? onSuccess,
+    Function(dynamic date)? onError,
+  });
+
+
 }

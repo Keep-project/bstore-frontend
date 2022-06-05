@@ -1,12 +1,13 @@
 import 'package:bstore/core/app_colors.dart';
 import 'package:bstore/core/app_size.dart';
+import 'package:bstore/models/response_data_model.dart/category_model.dart';
 import 'package:bstore/router/app_router.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class CategoryItem extends StatelessWidget {
-  final String? title;
-  const CategoryItem({Key? key, required this.title}) : super(key: key);
+  final Category category;
+  const CategoryItem({Key? key, required this.category}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -26,16 +27,16 @@ class CategoryItem extends StatelessWidget {
         ),
         child: InkWell(
           onTap: () {
-            Get.toNamed(AppRoutes.SEARCH);
+            Get.toNamed(AppRoutes.SEARCH, arguments: {'id': 'categorie', 'message': 'Catégorie "${category.libelle!}"', 'pk': category.id!});
           },
           child: Padding(
             padding: const EdgeInsets.symmetric(
                 horizontal: kDefaultPadding * 1.5, vertical: 8),
             child: Text(
-              title!,
+              category.libelle!.toString().capitalizeFirst!,
               style: const TextStyle(
                 color: kOrangeColor,
-                fontSize: 18,
+                fontSize: 14,
               ),
             ),
           ),
