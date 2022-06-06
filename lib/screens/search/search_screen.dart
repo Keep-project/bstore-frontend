@@ -143,7 +143,10 @@ class SearchScreen extends GetView<SearchController> {
                               ),
                             ),
                     ),
-              controller.listLivre.isEmpty && controller.searchStatus == LoadingStatus.completed
+              (controller.listLivre.isEmpty 
+              && controller.searchStatus == LoadingStatus.completed) ||
+              (controller.listLivre.isEmpty 
+              && controller.infinityStatus == LoadingStatus.completed) 
                   ? Positioned(
                       top: 165,
                       bottom: 0,
