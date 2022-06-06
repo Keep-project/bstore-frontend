@@ -6,6 +6,7 @@ import 'package:bstore/models/response_data_model.dart/livre_detail_model.dart';
 import 'package:bstore/services/local_service/authentication/authentication_service.dart';
 import 'package:bstore/services/local_service/authentication/authentication_service_impl.dart';
 import 'package:bstore/services/remote_service/livre/livre_service.dart';
+import 'package:dio/dio.dart';
 
 class LivreServiceImpl implements LivreService {
   final LocalAuthenticationServices _localAuth =
@@ -130,6 +131,21 @@ class LivreServiceImpl implements LivreService {
       token: await _localAuth.getToken(),
     ).get(onSuccess: (data) {
       onSuccess!(CategorieResponseModel.fromMap(data));
+    }, onError: (error) {
+      if (error != null) {
+        onError!(error);
+      }
+    });
+  }
+  
+  @override
+  Future filterBooksByTitleOrDescription({String? query, Function(dynamic data)? onSuccess, Function(dynamic date)? onError}) async {
+    ApiRequest(
+      url: "${Constants.API_URL}/book/filter/?query=$query",
+      data: {},
+      token: await _localAuth.getToken(),
+    ).get(onSuccess: (data) {
+      onSuccess!(LivreResponseModel.fromMap(data));
     }, onError: (error) {
       if (error != null) {
         onError!(error);

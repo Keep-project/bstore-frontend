@@ -93,7 +93,8 @@ class SearchScreen extends GetView<SearchController> {
                       left: 0,
                       right: 0,
                       child: controller.infinityStatus ==
-                              LoadingStatus.searching && controller.idPage != 'liste'
+                              LoadingStatus.searching 
+                              && controller.idPage != 'liste' && controller.idPage != 'search'
                           ? Container(
                               padding: const EdgeInsets.all(0),
                               height: 100,

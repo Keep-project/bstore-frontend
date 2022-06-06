@@ -12,7 +12,8 @@ class SearchController extends GetxController {
   LoadingStatus searchStatus = LoadingStatus.initial;
   final LivreService _serviceLivre = LivreServiceImpl();
 
-  final TextEditingController searchTextEditingController = TextEditingController();
+  final TextEditingController searchTextEditingController =
+      TextEditingController();
 
   List<Livre> listLivre = <Livre>[];
   List<Livre> listLivreCopy = <Livre>[];
@@ -28,7 +29,7 @@ class SearchController extends GetxController {
     idPage = Get.arguments['id'];
     switch (idPage) {
       case 'search':
-        await filterBooksByTitle();
+        await filterBooksByTitleOrDescription();
         break;
 
       case 'categorie':
@@ -39,14 +40,14 @@ class SearchController extends GetxController {
         await listBooks();
         break;
     }
-    
+
     scrollController.addListener(() async {
       if (scrollController.position.maxScrollExtent ==
           scrollController.offset) {
         if (next != null) {
           infinityStatus = LoadingStatus.searching;
           update();
-          Future.delayed(const Duration(seconds: 1), () async{
+          Future.delayed(const Duration(seconds: 1), () async {
             await listBooks();
           });
         }
@@ -81,10 +82,27 @@ class SearchController extends GetxController {
         });
   }
 
-  Future filterBooksByTitle() async{}
+  Future filterBooksByTitleOrDescription() async {
+    infinityStatus = LoadingStatus.searching;
+    await _serviceLivre.filterBooksByTitleOrDescription(
+      query: Get.arguments['query'],
+      onSuccess: (data) {
+        _count = data.count;
+          next = data.next;
+          previous = data.previous;
+          listLivre.addAll(data.results!);
+          infinityStatus = LoadingStatus.completed;
+      update();
+    }, onError: (error) {
+      print("=============== Home error ================");
+      print(error.response!.data);
+      print("==========================================");
+      infinityStatus = LoadingStatus.failed;
+      update();
+    });
+  }
 
   Future listBooks() async {
-    
     await _serviceLivre.listBooks(
         url: next,
         onSuccess: (data) {

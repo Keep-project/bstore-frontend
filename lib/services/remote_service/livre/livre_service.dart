@@ -22,6 +22,7 @@ abstract class LivreService {
     Function(dynamic data)? onSuccess,
     Function(dynamic date)? onError,
   });
+
   Future likeBook({
     int? idLivre,
     Function(dynamic data)? onSuccess,
@@ -39,5 +40,10 @@ abstract class LivreService {
     Function(dynamic date)? onError,
   });
 
+  Future filterBooksByTitleOrDescription({
+    String? query,
+    Function(dynamic data)? onSuccess,
+    Function(dynamic date)? onError,
+  });
 
 }

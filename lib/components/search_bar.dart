@@ -43,7 +43,7 @@ class SearchBar extends StatelessWidget {
                 });
                 return;
               }
-              Get.toNamed(AppRoutes.SEARCH, arguments: {'id': 'search','message': 'Resultat pour "${controller.text.trim()}"'});
+              Get.toNamed(AppRoutes.SEARCH, arguments: {'id': 'search','message': 'Resultat pour "${controller.text.trim()}"', 'query': controller.text.trim()});
             },
             child: Icon(CupertinoIcons.search, size: iconSize ?? 36, color: kOrangeColor)),
           hintText: "Rechercher un livre ...",
