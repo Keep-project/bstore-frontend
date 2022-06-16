@@ -1,6 +1,5 @@
 // ignore_for_file: avoid_print
 
-import 'package:bstore/components/book_item.dart';
 import 'package:bstore/components/head_title.dart';
 import 'package:bstore/components/popular_book_item.dart';
 import 'package:bstore/core/app_colors.dart';

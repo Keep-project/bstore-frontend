@@ -46,4 +46,9 @@ abstract class LivreService {
     Function(dynamic date)? onError,
   });
 
+  Future getBookForUser({
+    String? query,
+    Function(dynamic data)? onSuccess,
+    Function(dynamic date)? onError,
+  });
 }

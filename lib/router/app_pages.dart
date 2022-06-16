@@ -9,11 +9,18 @@ import 'package:bstore/screens/home/home.dart';
 import 'package:bstore/screens/login/login.dart';
 import 'package:bstore/screens/register/register.dart';
 import 'package:bstore/screens/search/search.dart';
+import 'package:bstore/screens/splashscreen/splashscreen.dart';
 import 'package:get/get.dart';
 
 class AppPages{
 
   static final pages = [
+    
+    GetPage(
+        name: AppRoutes.SPLASHSCREEN,
+        page: () => const SplashScreen(),
+        binding: SplashScreenBinding()),
+    
     GetPage(
         name: AppRoutes.HOME,
         page: () => const HomeScreen(),

@@ -10,7 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
-import 'package:path_provider/path_provider.dart';
 
 class BookFormScreenController extends GetxController {
 
@@ -44,15 +43,8 @@ class BookFormScreenController extends GetxController {
 
   List<Map<String, dynamic>> categories = [
     {"id": 1, "libelle": "Histoire"},
-    {"id": 2, "libelle": "Appartements modernes"},
-    {"id": 3, "libelle": "chambres simples"},
-    {"id": 4, "libelle": "Chambres modernes"},
-    {"id": 5, "libelle": "Studios simples"},
-    {"id": 6, "libelle": "Studios modernes"},
-    {"id": 7, "libelle": "Magasin"},
-    {"id": 8, "libelle": "Boutique"},
-    {"id": 9, "libelle": "Motel"},
-    {"id": 10, "libelle": "Snack"},
+    {"id": 2, "libelle": "Geographie"},
+    {"id": 3, "libelle": "Psychologie"},
   ];
 
   List<Map<String, dynamic>> langues = [

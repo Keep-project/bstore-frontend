@@ -19,7 +19,6 @@ class LoginScreenController extends GetxController{
 
   @override 
   void onInit() async {
-    await verifyToken();
     super.onInit();
   }
   @override
@@ -29,17 +28,7 @@ class LoginScreenController extends GetxController{
     super.dispose();
   }
 
-  Future verifyToken() async{
-    if ( await _localAuth.hasAuthToken()){
-      Future.delayed(const Duration(milliseconds: 1000), () {
-        Get.toNamed(AppRoutes.HOME);
-      });
-      
-    }
-    else{
-      print("User hasn't token");
-    }
-  }
+  
 
   Future login() async{
    
@@ -52,7 +41,7 @@ class LoginScreenController extends GetxController{
         textEditingNom.clear();
         textEditingPassword.clear();
         await _localAuth.saveToken(data.access);
-        Get.toNamed(AppRoutes.HOME);
+        Get.offAllNamed(AppRoutes.HOME);
       },
       onLoginError: (error){
         print("============ Login =============");

@@ -1,6 +1,7 @@
 // ignore_for_file: non_constant_identifier_names, constant_identifier_names
 
 class AppRoutes{
+  static const String SPLASHSCREEN = "/splashscreen";
   static const String HOME = "/home";
   static const String REGISTER = "/register";
   static const String LOGIN = "/login";
