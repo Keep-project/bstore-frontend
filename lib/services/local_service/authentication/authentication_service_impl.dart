@@ -35,5 +35,17 @@ class LocalAuthenticationServicesImpl implements LocalAuthenticationServices{
       return false;
     }
   }
+  
+  @override
+  Future<void> saveUser(String user) async {
+    SharedPreferences preferences = await  SharedPreferences.getInstance();
+    preferences.setString(Constants.BSTORE_USER, user);
+  }
+  
+  @override
+  Future<String?> getUser() async {
+    SharedPreferences preferences = await  SharedPreferences.getInstance();
+    return preferences.getString(Constants.BSTORE_USER) ?? "";
+  }
 
 }

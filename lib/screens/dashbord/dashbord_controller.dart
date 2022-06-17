@@ -26,8 +26,7 @@ class ProfilScreenController extends GetxController {
 
   Future getBookForUser() async {
     recentBookStatus = LoadingStatus.searching;
-    await _serviceLivre.getBookForUser(
-      onSuccess: (data) {
+    await _serviceLivre.getBookForUser(onSuccess: (data) {
       listLivre = data.results!;
       if (listLivre.isEmpty) {
         recentBookStatus = LoadingStatus.empty;
@@ -42,9 +41,7 @@ class ProfilScreenController extends GetxController {
       print("==========================================");
       recentBookStatus = LoadingStatus.failed;
       update();
-    }
-    
-    );
+    });
   }
 
   Future likeBook(int index) async {
