@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:bstore/core/app_colors.dart';
 import 'package:bstore/core/app_state.dart';
+import 'package:bstore/core/app_user.dart';
 import 'package:bstore/models/response_data_model.dart/livre_model.dart';
 import 'package:bstore/services/remote_service/livre/livre_service.dart';
 import 'package:bstore/services/remote_service/livre/livre_service_impl.dart';
@@ -23,36 +24,47 @@ class DetailScreenController extends GetxController {
   int currentIndexPage = 0;
   bool showComments = false;
   List<Text> comments = <Text>[];
+  String avatar = "";
 
   String? progress;
   client.Dio? dio;
+
 
   @override
   void onInit() async {
     dio = client.Dio();
     await getBookById();
+    await getUserData();
+    update();
     super.onInit();
   }
 
+  Future getUserData() async {
+    Map<String, dynamic> userJson = await UserInfo.user();
+    
+    if (userJson['avatar'] != "") {
+      avatar = userJson['avatar'];
+      update();
+    }
+  }
 
-    Future likeBook() async {
+  Future likeBook() async {
     await _serviceLivre.likeBook(
-      idLivre: livre.id!,
-      onSuccess:(data){
-        livre.is_like = data['results']['is_like'];
-        if (data['results']['is_like']){
-          livre.likes = livre.likes! +1;
-        }
-        else{livre.likes = livre.likes! -1;}
-        update();
-      },
-      onError:(error){
-        print("=============== Home error ================");
-        print(error);
-        print("==========================================");
-      }
-    );
-
+        idLivre: livre.id!,
+        onSuccess: (data) {
+          livre.is_like = data['results']['is_like'];
+          if (data['results']['is_like']) {
+            livre.likes = livre.likes! + 1;
+          } else {
+            livre.likes = livre.likes! - 1;
+          }
+          update();
+        },
+        onError: (error) {
+          print("=============== Home error ================");
+          print(error);
+          print("==========================================");
+        });
   }
 
   Future downloadBook() async {
@@ -76,6 +88,7 @@ class DetailScreenController extends GetxController {
 
   Future getBookById() async {
     loadingStatus = LoadingStatus.searching;
+    update();
     await _serviceLivre.getBookById(
         idLivre: Get.arguments,
         onSuccess: (data) {
@@ -145,8 +158,4 @@ class DetailScreenController extends GetxController {
     update();
   }
 
-  // @override
-  // void dispose() {
-  //   super.dispose();
-  // }
 }

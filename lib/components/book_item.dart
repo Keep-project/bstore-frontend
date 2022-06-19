@@ -39,7 +39,7 @@ class BookItem extends StatelessWidget {
           )
         ],
       ),
-      child: InkWell(
+      child: GestureDetector(
         onTap: () {
           Get.toNamed(AppRoutes.DETAILS, arguments: livre!.id );
         },
@@ -52,7 +52,7 @@ class BookItem extends StatelessWidget {
                 color: Colors.grey.withOpacity(.17),
                   image:  DecorationImage(
                       fit: BoxFit.fill,
-                      image: NetworkImage(livre!.image!)),
+                      image: NetworkImage(livre!.image!.toString())),
                   borderRadius: BorderRadius.circular(15)),
             ),
             const SizedBox(height: 4),

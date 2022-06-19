@@ -1,28 +1,124 @@
 // ignore_for_file: avoid_print
 
+import 'dart:io';
+
 import 'package:bstore/core/app_state.dart';
 import 'package:bstore/models/response_data_model.dart/livre_model.dart';
+import 'package:bstore/models/response_data_model.dart/user_data.dart';
 import 'package:bstore/services/remote_service/livre/livre_service.dart';
 import 'package:bstore/services/remote_service/livre/livre_service_impl.dart';
+import 'package:bstore/services/remote_service/user/user_service.dart';
+import 'package:bstore/services/remote_service/user/user_service_impl.dart';
 import 'package:get/get.dart';
+
+import 'package:dio/dio.dart' as client;
+import 'package:path_provider/path_provider.dart' as p;
 
 class ProfilScreenController extends GetxController {
   LoadingStatus recentBookStatus = LoadingStatus.initial;
+  LoadingStatus userStatus = LoadingStatus.initial;
+  LoadingStatus downloadStatus = LoadingStatus.initial;
 
   final LivreService _serviceLivre = LivreServiceImpl();
+  final UserService _userService = UserServiceImpl();
 
   List<Livre> listLivre = <Livre>[];
+  List<Livre> downloadsBooks = <Livre>[];
+  List<Livre> likedBooks = <Livre>[];
+  List<Livre> uploadsBooks = <Livre>[];
+
+  User user = User();
+  Livre? selectedToDownload;
+
+  String? progress;
+  client.Dio? dio;
 
   @override
   void onInit() async {
-    await getBookForUser();
+    dio = client.Dio();
+    update();
+    await getUserData();
     super.onInit();
   }
 
-  // @override
-  // void dispose() {
-  //   super.dispose();
-  // }
+  Future<List<Directory>?> _getExternalstoragePath() {
+    return p.getExternalStorageDirectories(type: p.StorageDirectory.downloads);
+  }
+
+  Future downloadAndSaveFileToStorage(Livre livre) async {
+    selectedToDownload = livre;
+    downloadStatus = LoadingStatus.searching;
+    update();
+    try {
+      final dirList = await _getExternalstoragePath();
+      final path = dirList![0].path;
+      final file = File(
+          "$path/${livre.titre!.toString().capitalizeFirst}.${livre.extension}");
+      await dio!.download(livre.fichier.toString(), file.path,
+          onReceiveProgress: (rec, total) {
+        progress = "${((rec / total) * 100).toStringAsFixed(0)} %";
+        print("Progress : $progress");
+      });
+      await downloadBook();
+      // print(file.path);
+    } catch (e) {
+      print(e);
+      downloadStatus = LoadingStatus.failed;
+    }
+    update();
+  }
+
+  Future downloadBook() async {
+    await _serviceLivre.downloadBook(
+      idLivre: selectedToDownload!.id!,
+      onSuccess: (data) async {
+        await getBookById(selectedToDownload!.id!);
+      },
+      onError: (error) {
+        print("======================= Détail error =====================");
+        print(error.response!.statusCode);
+        print("==========================================================");
+        downloadStatus = LoadingStatus.failed;
+        update();
+      },
+    );
+  }
+
+  Future getBookById(int id) async {
+    update();
+    await _serviceLivre.getBookById(
+        idLivre: id,
+        onSuccess: (data) {
+          downloadsBooks = [data.results, ...downloadsBooks];
+          downloadStatus = LoadingStatus.completed;
+          update();
+        },
+        onError: (error) {
+          print("======================= Détail error =====================");
+          print(error.response!.statusCode);
+          print("==========================================================");
+          downloadStatus = LoadingStatus.failed;
+          update();
+        });
+  }
+
+  Future getUserData() async {
+    userStatus = LoadingStatus.searching;
+    update();
+    await _userService.getUser(onSuccess: (data) async {
+      user = data.results!;
+      downloadsBooks = user.downloadsBooks!;
+      likedBooks = user.likedBooks!;
+      uploadsBooks = user.uploadsBooks!;
+      userStatus = LoadingStatus.completed;
+      update();
+    }, onError: (error) {
+      print("================== login / info =================");
+      print(error);
+      print("=================================================");
+      userStatus = LoadingStatus.failed;
+    });
+  }
 
   Future getBookForUser() async {
     recentBookStatus = LoadingStatus.searching;
@@ -44,15 +140,37 @@ class ProfilScreenController extends GetxController {
     });
   }
 
-  Future likeBook(int index) async {
+  Future likeBook(int id, int index, String libelle) async {
     await _serviceLivre.likeBook(
-        idLivre: listLivre[index].id!,
+        idLivre: id,
         onSuccess: (data) {
-          if (data['results']['is_like']) {
-            listLivre[index].likes = listLivre[index].likes! + 1;
-          } else {
-            listLivre[index].likes = listLivre[index].likes! - 1;
+          switch (libelle) {
+            case 'like':
+              if (data['results']['is_like']) {
+                likedBooks[index].likes = likedBooks[index].likes! + 1;
+              } else {
+                // likedBooks[index].likes = likedBooks[index].likes! - 1;
+                likedBooks.removeAt(index);
+              }
+              break;
+             case 'upload':
+              if (data['results']['is_like']) {
+                uploadsBooks[index].likes = uploadsBooks[index].likes! + 1;
+              } else {
+                uploadsBooks[index].likes = uploadsBooks[index].likes! - 1;
+              }
+              break;
+             case 'download':
+              if (data['results']['is_like']) {
+                uploadsBooks[index].likes = uploadsBooks[index].likes! + 1;
+              } else {
+                uploadsBooks[index].likes = uploadsBooks[index].likes! - 1;
+              }
+              break;
+            default:
+              break;
           }
+
           update();
         },
         onError: (error) {

@@ -1,15 +1,18 @@
 import 'package:bstore/core/app_colors.dart';
 import 'package:bstore/core/app_size.dart';
+import 'package:bstore/models/response_data_model.dart/livre_model.dart';
 import 'package:bstore/router/app_router.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 
 class PopularBookItem extends StatelessWidget {
   final EdgeInsets? margin;
+  final Livre livre;
+  final Function()? onTap;
   const PopularBookItem({
-    Key? key, this.margin,
+    Key? key,
+    this.margin,
+    required this.livre, this.onTap,
   }) : super(key: key);
 
   @override
@@ -20,10 +23,12 @@ class PopularBookItem extends StatelessWidget {
           height: 180,
           width: double.maxFinite,
           padding: const EdgeInsets.symmetric(
-              horizontal: kDefaultPadding / 5,
-              vertical: 2),
-          margin: margin?? const EdgeInsets.only(
-              left: kDefaultMargin * 2, right: kDefaultMargin * 2, bottom: kDefaultMargin*1.5),
+              horizontal: kDefaultPadding / 5, vertical: 2),
+          margin: margin ??
+              const EdgeInsets.only(
+                  left: kDefaultMargin * 2,
+                  right: kDefaultMargin * 2,
+                  bottom: kDefaultMargin * 1.5),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8),
             color: kWhiteColor,
@@ -31,14 +36,13 @@ class PopularBookItem extends StatelessWidget {
               BoxShadow(
                 offset: const Offset(5, 5),
                 blurRadius: 5,
-                color:
-                    kOrangeColor.withOpacity(0.059),
+                color: kOrangeColor.withOpacity(0.059),
               ),
             ],
           ),
-          child: InkWell(
+          child: GestureDetector(
             onTap: () {
-              Get.toNamed(AppRoutes.DETAILS);
+              Get.toNamed(AppRoutes.DETAILS, arguments: livre.id!);
             },
             child: Row(
               children: [
@@ -47,12 +51,10 @@ class PopularBookItem extends StatelessWidget {
                   width: 120,
                   padding: const EdgeInsets.all(0),
                   decoration: BoxDecoration(
-                    borderRadius:
-                        BorderRadius.circular(8),
-                    image: const DecorationImage(
+                    borderRadius: BorderRadius.circular(8),
+                    image: DecorationImage(
                       fit: BoxFit.fill,
-                      image: AssetImage(
-                          "assets/images/jeune-afrique.jpg"),
+                      image: NetworkImage(livre.image!),
                     ),
                   ),
                 ),
@@ -60,120 +62,94 @@ class PopularBookItem extends StatelessWidget {
                   width: 8,
                 ),
                 Expanded(
-                  child: Column(children: [
-                    const Spacer(),
-                    RichText(
-                      text: TextSpan(children: [
-                        const TextSpan(
-                          text:
-                              "Femme noir femme de pouvoir\n",
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight:
-                                FontWeight.w600,
-                            color: kDarkColor86,
-                          ),
-                        ),
-                        TextSpan(
-                          text: "Jacque Vergès",
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight:
-                                FontWeight.w600,
-                            color: kDarkColor86
-                                .withOpacity(.5),
-                          ),
-                        ),
-                      ]),
-                    ),
-                    const Spacer(),
-                    Row(
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Expanded(
-                          child: CustomIconData(
-                              iconData: CupertinoIcons
-                                  .book_fill, value: "150", size: 26),
+                        const Spacer(),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 10),
+                          child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "${livre.titre!.toString().capitalizeFirst}\n",
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w600,
+                                    color: kDarkColor86,
+                                  ),
+                                ),
+                                Text(
+                                  "${livre.auteur!.toString().capitalizeFirst}",
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w600,
+                                    color: kDarkColor86.withOpacity(.5),
+                                  ),
+                                ),
+                              ]),
                         ),
-                        Expanded(
-                          child: CustomIconData(
-                              iconData: CupertinoIcons
-                                  .heart_fill, value: "70", size: 26, color: kOrangeColor.withOpacity(.8)),
-                        ),
-                        const Expanded(
-                          child: CustomIconData(
-                              iconData: CupertinoIcons
-                                  .chat_bubble_2_fill, value: "150", size: 26),
-                        ),
-                      ],
-                    ),
-                    const Spacer(),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 12),
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
+                        const Spacer(),
+                        Row(
                           children: [
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-                              margin: const EdgeInsets.only(right: 8),
-                              height: 30,
-                              decoration: BoxDecoration(
-                                color: Colors.green.withOpacity(0.12),
-                                // color: kOrangeColor39.withOpacity(0.12),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Center(
-                                child: Text("Roman",
-                                  style: TextStyle(
-                                    // color: kOrangeColor,
-                                    color: Colors.green.withOpacity(.8),
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ),
+                            Expanded(
+                              child: CustomIconData(
+                                onTap: () {},
+                                  iconData: CupertinoIcons.book_fill,
+                                  value: "${livre.nbpages!}",
+                                  size: 20),
                             ),
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-                              margin: const EdgeInsets.only(right: 8),
-                              height: 30,
-                              decoration: BoxDecoration(
-                                color: kOrangeColor39.withOpacity(0.12),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: const Center(
-                                child: Text("Roman",
-                                  style: TextStyle(
-                                    color: kOrangeColor,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ),
+                            Expanded(
+                              child: CustomIconData(
+                                onTap: ()async{ await onTap!();},
+                                  iconData: CupertinoIcons.heart_fill,
+                                  value: "${livre.likes!}",
+                                  size: 20,
+                                  color: kOrangeColor.withOpacity(.8)),
                             ),
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-                              margin: const EdgeInsets.only(right: 8),
-                              height: 30,
-                              decoration: BoxDecoration(
-                                color: Colors.green.withOpacity(0.12),
-                                // color: kOrangeColor39.withOpacity(0.12),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Center(
-                                child: Text("Roman",
-                                  style: TextStyle(
-                                    // color: kOrangeColor,
-                                    color: Colors.green.withOpacity(.8),
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ),
+                            Expanded(
+                              child: CustomIconData(
+                                onTap: (){},
+                                  iconData: CupertinoIcons.chat_bubble_2_fill,
+                                  value: "${livre.nbcommentaires!}",
+                                  size: 20),
                             ),
                           ],
                         ),
-                      ),
-                    ),
-                    const Spacer(),
-                  ]),
+                        const Spacer(),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 12),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: kDefaultPadding),
+                            margin: const EdgeInsets.only(right: 8),
+                            height: 30,
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              // color: Colors.green.withOpacity(0.12),
+                              color: kOrangeColor39.withOpacity(0.12),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Center(
+                              child: Text(
+                                livre.categorie!,
+                                style: const TextStyle(
+                                  color: kOrangeColor,
+                                  // color: Colors.green.withOpacity(.8),
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        const Spacer(),
+                      ]),
                 ),
                 const SizedBox(
                   width: 3,
@@ -184,27 +160,28 @@ class PopularBookItem extends StatelessWidget {
         ),
         Positioned(
           top: -1,
-          right: kDefaultMargin*2.5,
-          child:Icon(CupertinoIcons.bookmark, size: 22, color: kDarkColor86.withOpacity(.5) ),)
+          right: kDefaultMargin * 2.5,
+          child: Icon(CupertinoIcons.bookmark,
+              size: 22, color: kDarkColor86.withOpacity(.5)),
+        )
       ],
     );
   }
 }
-
-
-
 
 class CustomIconData extends StatelessWidget {
   final String? value;
   final IconData? iconData;
   final double? size;
   final Color? color;
-  final Function()? onPressed;
+  final Function()? onTap;
   const CustomIconData({
     Key? key,
     this.value,
-    this.iconData, this.size,
-    this.color, this.onPressed,
+    this.iconData,
+    this.size,
+    this.color,
+    this.onTap,
   }) : super(key: key);
 
   @override
@@ -212,11 +189,22 @@ class CustomIconData extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        IconButton(
-          onPressed: () { onPressed!();},
-          icon: Icon(iconData!, size: size!, color: color ?? kDarkColor86.withOpacity(0.6)),
+        const SizedBox(
+          width: 10,
         ),
-        Text(value!, style: TextStyle(color:  kDarkColor86.withOpacity(0.7), fontSize: 16)),
+        GestureDetector(
+          onTap: () async {
+            await onTap!();
+          },
+          child: Icon(iconData!,
+              size: size!, color: color ?? kDarkColor86.withOpacity(0.6)),
+        ),
+        const SizedBox(
+          width: 3,
+        ),
+        Text(value!,
+            style:
+                TextStyle(color: kDarkColor86.withOpacity(0.7), fontSize: 16)),
       ],
     );
   }

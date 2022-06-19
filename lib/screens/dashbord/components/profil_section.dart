@@ -6,8 +6,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart'; 
 
 class ProfilSection extends StatelessWidget {
+  final dynamic controller;
   const ProfilSection({
-    Key? key,
+    Key? key, this.controller,
   }) : super(key: key);
 
   @override
@@ -25,7 +26,7 @@ class ProfilSection extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Container(
+              controller.user.avatar == null ?  Container(
                     height: 75,
                     width: 75,
                     decoration: BoxDecoration(
@@ -37,21 +38,34 @@ class ProfilSection extends StatelessWidget {
                     ),
                     child: const Center(
                         child: Icon(CupertinoIcons.person_fill,
-                            color: kWhiteColor, size: 36))),
+                            color: kWhiteColor, size: 36))) :
+
+                Container(
+                    height: 75,
+                    width: 75,
+                    clipBehavior: Clip.antiAlias,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        width: 2,
+                        color: kWhiteColor,
+                      ),
+                    ),
+                    
+                    child: Image.network(controller.user.avatar!.toString(), fit: BoxFit.fill),
+                    ),
                 const SizedBox(height: kDefaultPadding / 2),
-                const Text(
-                  "john Doe",
-                  style: TextStyle(
+                Text(controller.user.username.toString(),
+                  style: const TextStyle(
                     fontSize: 18,
                     color: kWhiteColor,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                Text(
-                  "johndoe@gmail.com",
+                Text(controller.user.email.toString(),
                   style: TextStyle(
                     fontSize: 15,
-                    color: Colors.grey.withOpacity(.5),
+                    color: Colors.white.withOpacity(.7),
                   ),
                 ),
               ],

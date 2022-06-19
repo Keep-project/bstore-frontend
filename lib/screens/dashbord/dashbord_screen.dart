@@ -6,6 +6,7 @@ import 'package:bstore/components/popular_book_item.dart';
 import 'package:bstore/core/app_colors.dart';
 import 'package:bstore/core/app_size.dart';
 import 'package:bstore/core/app_state.dart';
+import 'package:bstore/router/app_router.dart';
 import 'package:bstore/screens/dashbord/components/background_color.dart';
 import 'package:bstore/screens/dashbord/components/custom_card.dart';
 import 'package:bstore/screens/dashbord/components/profil_section.dart';
@@ -30,7 +31,7 @@ class ProfilScreen extends GetView<ProfilScreenController> {
                   height: Get.height,
                   color: kBlueDark,
                 ),
-                const ProfilSection(),
+                ProfilSection(controller: controller),
                 const BackgrounColor(),
                 Positioned(
                   top: 230,
@@ -51,13 +52,13 @@ class ProfilScreen extends GetView<ProfilScreenController> {
                         children: [
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: const [
+                            children: [
                               CustomCard(
-                                  number: 24,
+                                  number: controller.downloadsBooks.length,
                                   iconData: CupertinoIcons.cloud_download,
                                   libelle: "Téléchargements"),
                               CustomCard(
-                                  number: 35,
+                                  number: controller.uploadsBooks.length,
                                   iconData: CupertinoIcons.cloud_upload,
                                   libelle: "Publications"),
                             ],
@@ -69,31 +70,113 @@ class ProfilScreen extends GetView<ProfilScreenController> {
                           const SizedBox(
                             height: kDefaultPadding - 4,
                           ),
-                          controller.recentBookStatus == LoadingStatus.searching ? 
+                          controller.userStatus == LoadingStatus.searching ? 
                           Container(
+                            decoration: const BoxDecoration(),
                               child: const Center(
                                 child: CircularProgressIndicator(color:  Colors.red,),
                               )
-                          ): controller.recentBookStatus == LoadingStatus.completed ? 
+                          ): controller.userStatus == LoadingStatus.completed ? 
                           SingleChildScrollView(
                             scrollDirection: Axis.horizontal,
                             child: Row(
                               children: <Widget>[
                                 ...List.generate(
-                                  controller.listLivre.length,
+                                  controller.likedBooks.length,
                                 (index) => Stack(
                                   children: <Widget> [
                                     BookItem(
                                       controller: controller,
-                                      livre: controller.listLivre[index],
-                                      onTap: () async { controller.likeBook(index);},
+                                      livre: controller.likedBooks[index],
+                                      onTap: () async { controller.likeBook( controller.likedBooks[index].id!,index, 'like');},
                                     ),
                                     
                                     Positioned(
                                       top: kDefaultMargin /1.6,
                                       right: kDefaultMargin *2.5,
-                                      child: InkWell(
-                                        onTap: () {print("Télécharger");},
+                                      child: GestureDetector(
+                                        onTap: () async {
+                                          await controller.downloadAndSaveFileToStorage(controller.likedBooks[index]);
+                                        },
+                                        child: controller.downloadStatus == LoadingStatus.searching && controller.likedBooks[index].id! == controller.selectedToDownload!.id! ?
+                                        Container(
+                                          height: 25,
+                                          width: 25,
+                                          decoration: const BoxDecoration(),
+                                          child: const CircularProgressIndicator(color: kOrangeColor)
+                                        )
+                                      :Container(
+                                          height: 35,
+                                          width: 35,
+                                          decoration: BoxDecoration(
+                                            color: kWhiteColor,
+                                            shape: BoxShape.circle,
+                                            boxShadow: [
+                                              BoxShadow(
+                                                offset: const Offset(0, 8),
+                                                blurRadius: 8,
+                                                color: kGreenColor.withOpacity(0.2)
+                                              ),
+                                            ]
+                                          ),
+                                          child: const Center(
+                                            child: Icon(CupertinoIcons.arrow_down_to_line, color: kGreenColor, size: 26)
+                                          ),
+                                        ),
+                                      )
+                                    ),
+                                  ],
+                                )),
+                              ],
+                            ),
+                          ):  Container(
+                            decoration: const BoxDecoration(),
+                              child: const Center(
+                                child: Text("No data"),
+                              )
+                          ),
+                          const SizedBox(
+                            height: kDefaultMargin * 3,
+                          ),
+                          const HeadTitle(title: "Mes publications"),
+                          const SizedBox(
+                            height: kDefaultPadding - 4,
+                          ),
+                          controller.userStatus == LoadingStatus.searching ? 
+                          Container(
+                            decoration: const BoxDecoration(),
+                              child: const Center(
+                                child: CircularProgressIndicator(color:  Colors.red,),
+                              )
+                          ): controller.userStatus == LoadingStatus.completed ? 
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              children: <Widget>[
+                                ...List.generate(
+                                  controller.uploadsBooks.length,
+                                (index) => Stack(
+                                  children: <Widget> [
+                                    BookItem(
+                                      controller: controller,
+                                      livre: controller.uploadsBooks[index],
+                                      onTap: () async { controller.likeBook(controller.uploadsBooks[index].id!, index, 'upload');},
+                                    ),
+                                    
+                                    Positioned(
+                                      top: kDefaultMargin /1.6,
+                                      right: kDefaultMargin *2.5,
+                                      child: controller.downloadStatus == LoadingStatus.searching && controller.uploadsBooks[index].id! == controller.selectedToDownload!.id! ?
+                                        Container(
+                                          height: 25,
+                                          width: 25,
+                                          decoration: const BoxDecoration(),
+                                          child: const CircularProgressIndicator(color: kOrangeColor)
+                                        )
+                                      : GestureDetector(
+                                        onTap: () async {
+                                          await controller.downloadAndSaveFileToStorage(controller.uploadsBooks[index]);
+                                        },
                                         child: Container(
                                           height: 35,
                                           width: 35,
@@ -119,6 +202,7 @@ class ProfilScreen extends GetView<ProfilScreenController> {
                               ],
                             ),
                           ):  Container(
+                            decoration: const BoxDecoration(),
                               child: const Center(
                                 child: Text("No data"),
                               )
@@ -126,24 +210,35 @@ class ProfilScreen extends GetView<ProfilScreenController> {
                           const SizedBox(
                             height: kDefaultMargin * 2.6,
                           ),
-                          const HeadTitle(title: "Mes téléchargement"),
+                          HeadTitle(title: "Mes téléchargement(${controller.downloadsBooks.length})"),
                           const SizedBox(
                             height: kDefaultPadding - 4,
                           ),
                           ...List.generate(
-                            25,
+                            controller.downloadsBooks.length,
                             (index) => Stack(
                               clipBehavior: Clip.none,
                               children:  [
-                                const PopularBookItem(
+                                PopularBookItem(
+                                  onTap: () async{ await controller.likeBook( controller.downloadsBooks[index].id!, index, 'download');},
+                                  livre: controller.downloadsBooks[index],
                                     margin:
-                                        EdgeInsets.only(bottom: kDefaultMargin * 1.8)),
+                                       const EdgeInsets.only(bottom: kDefaultMargin * 1.8)),
                                 Positioned(
                                       top: -10,
                                       right: kDefaultMargin *1.92,
-                                      child: InkWell(
-                                        onTap: () {print("Télécharger");},
-                                        child: Container(
+                                      child: GestureDetector(
+                                         onTap: () async {
+                                          await controller.downloadAndSaveFileToStorage(controller.downloadsBooks[index]);
+                                        },
+                                        child:  controller.downloadStatus == LoadingStatus.searching && controller.downloadsBooks[index].id! == controller.selectedToDownload!.id! ?
+                                        Container(
+                                          height: 25,
+                                          width: 25,
+                                          decoration: const BoxDecoration(),
+                                          child: const CircularProgressIndicator(color: kOrangeColor)
+                                        )
+                                      :   Container(
                                           height: 35,
                                           width: 35,
                                           decoration: BoxDecoration(

@@ -11,10 +11,11 @@ class HeadTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text(title!,
-      style: Theme.of(context).textTheme.titleLarge!
+      style: Theme.of(context).textTheme.bodyLarge!
       .copyWith(
         color: kDarkColor90.withOpacity(0.8),
         fontWeight: FontWeight.w600,
+        fontSize: 18,
       ),
     );
   }

@@ -15,18 +15,22 @@ import 'package:get/get.dart';
 class HomeScreenController extends GetxController{
   LoadingStatus recentBookStatus = LoadingStatus.initial;
   LoadingStatus categoriesListStatus = LoadingStatus.initial;
+  LoadingStatus popularListStatus = LoadingStatus.initial;
 
   final TextEditingController searchTextEditingController = TextEditingController();
 
   final LivreService  _serviceLivre = LivreServiceImpl();
 
   List<Livre> listLivre = <Livre>[];
+  List<Livre> popularLivreBooks = <Livre>[];
+
   List<Category> listCategories = <Category>[];
 
   @override
   void onInit() async{
     await categoriesList();
     await listBooks();
+    await popularListBooks();
     super.onInit();
   }
 
@@ -36,8 +40,30 @@ class HomeScreenController extends GetxController{
     super.dispose();
   }
 
+  Future popularListBooks() async {
+    popularListStatus = LoadingStatus.searching;
+    update();
+    await _serviceLivre.getPopularBooks(
+      onSuccess:(data){
+        popularLivreBooks = data.results!;
+        popularListStatus = LoadingStatus.completed;
+        update();
+      },
+      onError:(error){
+        print("=============== Home error ================");
+        print(error.response!.data);
+        print(error.response!.statusCode);
+        print("==========================================");
+        popularListStatus = LoadingStatus.failed;
+        update();
+      }
+    );
+  }
+
   Future listBooks() async {
+    
     recentBookStatus = LoadingStatus.searching;
+    update();
     await _serviceLivre.listBooks(
       onSuccess:(data){
         listLivre = data.results!;
@@ -58,6 +84,7 @@ class HomeScreenController extends GetxController{
 
   Future categoriesList() async {
     categoriesListStatus = LoadingStatus.searching;
+    update();
     await _serviceLivre.categoriesList(
       onSuccess:(data){
         listCategories = List<Category>.from(data.map((c) => Category.fromMap(c)));
@@ -76,6 +103,7 @@ class HomeScreenController extends GetxController{
   }
 
   Future likeBook(int index) async {
+  
     await _serviceLivre.likeBook(
       idLivre: listLivre[index].id!,
       onSuccess:(data){
@@ -92,6 +120,25 @@ class HomeScreenController extends GetxController{
       }
     );
   }
+
+  Future likePopularBook(int index) async {
+    await _serviceLivre.likeBook(
+      idLivre: popularLivreBooks[index].id!,
+      onSuccess:(data){
+        if (data['results']['is_like']){
+          popularLivreBooks[index].likes = popularLivreBooks[index].likes! + 1;
+        }
+        else{popularLivreBooks[index].likes = popularLivreBooks[index].likes! - 1;}
+        update();
+      },
+      onError:(error){
+        print("=============== Home error ================");
+        print(error);
+        print("==========================================");
+      }
+    );
+  }
+
 
 
 }

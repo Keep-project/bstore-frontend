@@ -68,15 +68,15 @@ class User {
   );
 
   Map<String, dynamic> toMap() => {
-    'id': id,
-    'username': username,
-    'avatar': avatar,
-    'email': email,
+    'id': id ?? 0,
+    'username': username ?? "",
+    'avatar': avatar ?? "",
+    'email': email ?? "",
     'dateJoined': dateJoined == null ? DateTime.now().toIso8601String() : dateJoined!.toIso8601String(),
-    'userPermissions': userPermissions,
-    'likedBooks': likedBooks,
-    'downloadsBooks': downloadsBooks,
-    'uploadsBooks': uploadsBooks
+    'userPermissions': userPermissions ?? [],
+    'likedBooks': likedBooks ?? [],
+    'downloadsBooks': downloadsBooks ?? [],
+    'uploadsBooks': uploadsBooks ?? []
   };
 
   String toJson() => json.encode(toMap());

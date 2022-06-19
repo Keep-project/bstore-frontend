@@ -37,7 +37,7 @@ class SplashScreen extends GetView<SplashScreenController> {
                         fontSize: 26,
                       ),
                     ),
-                    const Spacer(),
+                    const SizedBox(height: kDefaultPadding*1.6),
                     const Text("Votre application de partage\n de documents important", 
                     textAlign: TextAlign.center,
                       style: TextStyle(

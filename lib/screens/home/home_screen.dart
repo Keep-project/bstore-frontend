@@ -81,8 +81,13 @@ class HomeScreen extends GetView<HomeScreenController> {
                                           padding: const EdgeInsets.symmetric(
                                               horizontal: kDefaultPadding),
                                           child: Row(children: [
-                                            HeadTitle(
-                                              title: "Livres récents(${controller.listLivre.length.toString().padLeft(2, '0')})",
+                                            Row(
+                                              children: [
+                                                const HeadTitle(
+                                                  title: "Livres récents",
+                                                ),
+                                                Text("(${controller.listLivre.length.toString().padLeft(2, '0')})"),
+                                              ],
                                             ),
                                             const Spacer(),
                                             InkWell(
@@ -144,9 +149,32 @@ class HomeScreen extends GetView<HomeScreenController> {
                                           ),
                                         ),
                                         const SizedBox(height: 16),
-                                        const PopularBookItem(),
-                                        const PopularBookItem(),
-                                        const PopularBookItem(),
+
+                                        controller.popularListStatus == LoadingStatus.searching ?
+                                        Container(
+                                          height: 155,
+                                          width: double.infinity,
+                                          padding: const EdgeInsets.all(0),
+                                          child: const Center(
+                                            child: CircularProgressIndicator(color: kOrangeColor),
+                                          ),
+                                        )
+                                        : SingleChildScrollView(
+                                          child: Column(
+                                            children: <Widget>[
+                                              ...List.generate(
+                                                controller.popularLivreBooks.length, 
+                                              (index) => PopularBookItem(
+                                                livre: controller.popularLivreBooks[index],
+                                                onTap: ()async{ await controller.likePopularBook(index);},
+                                                
+                                              ),)
+                                              
+                                            ],
+                                          ),
+                                        ),
+                                        const SizedBox(height: 20),
+                                        
                                       ]),
                                 ),
                               ),

@@ -51,4 +51,8 @@ abstract class LivreService {
     Function(dynamic data)? onSuccess,
     Function(dynamic date)? onError,
   });
+  Future getPopularBooks({
+    Function(dynamic data)? onSuccess,
+    Function(dynamic date)? onError,
+  });
 }

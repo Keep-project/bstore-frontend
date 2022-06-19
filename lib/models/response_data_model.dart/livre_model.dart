@@ -39,6 +39,7 @@ class LivreResponseModel {
 class Livre {
   final int? id;
   final String? titre;
+  final String? categorie;
   final int? proprietaire;
   final String? description;
   final int? nbpages;
@@ -60,6 +61,7 @@ class Livre {
   Livre({ 
       this.id,
       this.titre,
+      this.categorie,
       this.proprietaire,
       this.description,
       this.nbpages,
@@ -83,6 +85,7 @@ class Livre {
   factory Livre.fromMap(Map<String, dynamic> json) => Livre(
         id: json['id'] ?? 0,
         titre: json['titre'] ?? "",
+        categorie: json['get_categorie'] ?? "",
         proprietaire: json['proprietaire'] ?? 0,
         description: json['description'] ?? "",
         nbpages: json['nbpages'] ?? 0,
@@ -105,6 +108,7 @@ class Livre {
   Map<String, dynamic> toMap() => {
     'id': id,
     'titre': titre,
+    'categorie': categorie,
     'proprietaire': proprietaire,
     'description': description,
     'nbpages': nbpages,

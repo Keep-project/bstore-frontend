@@ -4,6 +4,7 @@ import 'package:bstore/components/custom_button.dart';
 import 'package:bstore/components/custom_text_field.dart';
 import 'package:bstore/core/app_colors.dart';
 import 'package:bstore/core/app_size.dart';
+import 'package:bstore/core/app_state.dart';
 import 'package:bstore/router/app_router.dart';
 import 'package:bstore/screens/login/login.dart';
 import 'package:flutter/cupertino.dart';
@@ -26,16 +27,12 @@ class LoginScreen extends GetView<LoginScreenController> {
                 width: Get.width,
                 child: Column(
                   children: [
-                    const Spacer(),
-                    const Center(
-                      child: Text(
-                        "Logo",
-                        style: TextStyle(
-                          color: kDarkColor86,
-                          fontWeight: FontWeight.w900,
-                          fontSize: 50,
-                        ),
-                      ),
+                    const Spacer(flex: 2),
+                    Container(
+                      height: 100,
+                      width: 100,
+                      decoration: const BoxDecoration(),
+                      child: Image.asset("assets/images/bstore-logo.png", fit: BoxFit.contain),
                     ),
                     const Spacer(),
                     Container(
@@ -76,6 +73,15 @@ class LoginScreen extends GetView<LoginScreenController> {
                                 iconData: CupertinoIcons.eye_fill,
                               ),
                              const SizedBox(height: kDefaultPadding*3),
+                            controller.loginStatus == LoadingStatus.searching ?
+                            Container(
+                              height: 45,
+                              width: double.infinity,
+                              decoration: const BoxDecoration(),
+                              child: const Center(
+                                child: CircularProgressIndicator(color: kOrangeColor,),
+                              ),
+                            ) :
                               CustomButton(onTap: () async { await controller.login();},),
                               const SizedBox(height: kDefaultPadding),
                               Row(

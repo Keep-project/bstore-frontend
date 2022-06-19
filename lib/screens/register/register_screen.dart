@@ -26,16 +26,12 @@ class RegisterScreen extends GetView<RegisterScreenController> {
                 width: Get.width,
                 child: Column(
                   children: [
-                    const Spacer(),
-                    const Center(
-                      child: Text(
-                        "Logo",
-                        style: TextStyle(
-                          color: kDarkColor86,
-                          fontWeight: FontWeight.w900,
-                          fontSize: 50,
-                        ),
-                      ),
+                    const Spacer(flex: 2),
+                    Container(
+                      height: 100,
+                      width: 100,
+                      decoration: const BoxDecoration(),
+                      child: Image.asset("assets/images/bstore-logo.png", fit: BoxFit.contain),
                     ),
                     const Spacer(),
                     Container(

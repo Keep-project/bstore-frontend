@@ -5,28 +5,30 @@ import 'package:bstore/components/popular_book_item.dart';
 import 'package:bstore/core/app_colors.dart';
 import 'package:bstore/core/app_size.dart';
 import 'package:bstore/core/app_state.dart';
+import 'package:bstore/core/constants.dart';
 import 'package:bstore/router/app_router.dart';
 import 'package:bstore/screens/details/components/icon_label.dart';
 import 'package:bstore/screens/details/detail.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:share_plus/share_plus.dart';
 
 class DetailScreen extends GetView<DetailScreenController> {
   const DetailScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        extendBodyBehindAppBar: true,
-        appBar: buildAppBar(),
-        body: GetBuilder<DetailScreenController>(builder: (controller) {
-          return SingleChildScrollView(
+    return GetBuilder<DetailScreenController>(builder: (_) {
+      return SafeArea(
+        child: Scaffold(
+          extendBodyBehindAppBar: true,
+          appBar: buildAppBar(controller),
+          body: SingleChildScrollView(
             child: controller.loadingStatus == LoadingStatus.searching
                 ? Container(
-                  height: Get.height,
-                  width: Get.width,
+                    height: Get.height,
+                    width: Get.width,
                     padding: const EdgeInsets.all(20),
                     child: const Center(
                         child: CircularProgressIndicator(
@@ -120,7 +122,9 @@ class DetailScreen extends GetView<DetailScreenController> {
                                           MainAxisAlignment.center,
                                       children: [
                                         CustomIconData(
-                                            onPressed: () async{ await controller.likeBook();},
+                                            onTap: () async {
+                                              await controller.likeBook();
+                                            },
                                             color: kOrangeColor,
                                             size: 26,
                                             iconData: controller.livre.is_like!
@@ -246,7 +250,10 @@ class DetailScreen extends GetView<DetailScreenController> {
                                               MainAxisAlignment.center,
                                           children: [
                                             Text(
-                                              controller.downloadStatus == LoadingStatus.searching ? "En cours..." : "Télécharger",
+                                              controller.downloadStatus ==
+                                                      LoadingStatus.searching
+                                                  ? "En cours..."
+                                                  : "Télécharger",
                                               style: const TextStyle(
                                                 color: kWhiteColor,
                                                 fontSize: 11,
@@ -254,10 +261,16 @@ class DetailScreen extends GetView<DetailScreenController> {
                                               ),
                                             ),
                                             const SizedBox(width: 8),
-                                            controller.downloadStatus == LoadingStatus.searching ? const CircularProgressIndicator(color: kWhiteColor, strokeWidth: 2) : const Icon(CupertinoIcons
-                                                    .cloud_download_fill,
-                                                color: kWhiteColor,
-                                                size: 26)
+                                            controller.downloadStatus ==
+                                                    LoadingStatus.searching
+                                                ? const CircularProgressIndicator(
+                                                    color: kWhiteColor,
+                                                    strokeWidth: 2)
+                                                : const Icon(
+                                                    CupertinoIcons
+                                                        .cloud_download_fill,
+                                                    color: kWhiteColor,
+                                                    size: 26)
                                           ]),
                                     ),
                                   ),
@@ -421,13 +434,13 @@ class DetailScreen extends GetView<DetailScreenController> {
                       )
                     ],
                   ),
-          );
-        }),
-      ),
-    );
+          ),
+        ),
+      );
+    });
   }
 
-  AppBar buildAppBar() {
+  AppBar buildAppBar(controller) {
     return AppBar(
       backgroundColor: Colors.transparent,
       elevation: 0,
@@ -441,13 +454,17 @@ class DetailScreen extends GetView<DetailScreenController> {
       actions: [
         Padding(
           padding: const EdgeInsets.all(8.0),
-          child: InkWell(
-            onTap: () {
-              Get.toNamed(AppRoutes.DASHBORD);
-            },
-            child: const Icon(CupertinoIcons.person_fill,
-                color: kDarkColor90, size: 26),
-          ),
+          child: GestureDetector(
+              // onTap: () {
+              //   Get.toNamed(AppRoutes.BOOKFORM);
+              // },
+              onTap: () async {
+                // await Share.share("Maisonier Lite vous propose: \n\n ${controller.annonce!.images![0]}");
+                await Share.share(
+                    "${controller.livre.titre!} \n${controller.livre.description!}\nNous sommes là pour vous. Cliquez sur le lien.  \n\n${controller.livre.fichier!}");
+              },
+              child: const Icon(Icons.share_outlined,
+                  color: kDarkColor90, size: 26)),
         ),
         const SizedBox(
           width: 5,
@@ -455,11 +472,22 @@ class DetailScreen extends GetView<DetailScreenController> {
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: GestureDetector(
-              onTap: () {
-                Get.toNamed(AppRoutes.BOOKFORM);
-              },
-              child: const Icon(Icons.share_outlined,
-                  color: kDarkColor90, size: 26)),
+            onTap: () {
+              Get.offNamed(AppRoutes.DASHBORD);
+            },
+            child: controller.avatar == ""
+                ? const Icon(CupertinoIcons.person_fill,
+                    color: kDarkColor90, size: 26)
+                : Container(
+                    height: 35,
+                    width: 35,
+                    clipBehavior: Clip.antiAlias,
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                    ),
+                    child: Image.network(controller.avatar, fit: BoxFit.fill),
+                  ),
+          ),
         ),
         const SizedBox(
           width: 10,
