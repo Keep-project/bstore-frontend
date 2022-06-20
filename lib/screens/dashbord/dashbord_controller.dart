@@ -57,7 +57,7 @@ class ProfilScreenController extends GetxController {
       await dio!.download(livre.fichier.toString(), file.path,
           onReceiveProgress: (rec, total) {
         progress = "${((rec / total) * 100).toStringAsFixed(0)} %";
-        print("Progress : $progress");
+        // print("Progress : $progress");
       });
       await downloadBook();
       // print(file.path);
@@ -75,7 +75,7 @@ class ProfilScreenController extends GetxController {
         await getBookById(selectedToDownload!.id!);
       },
       onError: (error) {
-        print("======================= Détail error =====================");
+        print("======================= Dashbord / Détail error =====================");
         print(error.response!.statusCode);
         print("==========================================================");
         downloadStatus = LoadingStatus.failed;
@@ -146,37 +146,36 @@ class ProfilScreenController extends GetxController {
         onSuccess: (data) {
           switch (libelle) {
             case 'like':
-              if (data['results']['is_like']) {
-                likedBooks[index].likes = likedBooks[index].likes! + 1;
-              } else {
-                // likedBooks[index].likes = likedBooks[index].likes! - 1;
-                likedBooks.removeAt(index);
-              }
+              likedBooks.removeAt(index);
               break;
-             case 'upload':
-              if (data['results']['is_like']) {
-                uploadsBooks[index].likes = uploadsBooks[index].likes! + 1;
-              } else {
-                uploadsBooks[index].likes = uploadsBooks[index].likes! - 1;
+            case 'upload':
+              uploadsBooks[index] = Livre.fromMap(data['results']);
+              if (data['is_like']){
+                likedBooks = [ Livre.fromMap(data['results']), ...likedBooks ];
               }
+              else{
+                likedBooks.removeWhere((e) => e.id == id);
+               }
               break;
-             case 'download':
-              if (data['results']['is_like']) {
-                uploadsBooks[index].likes = uploadsBooks[index].likes! + 1;
-              } else {
-                uploadsBooks[index].likes = uploadsBooks[index].likes! - 1;
+            case 'download':
+              downloadsBooks[index] = Livre.fromMap(data['results']);
+              if (data['is_like']){
+                likedBooks = [ Livre.fromMap(data['results']), ...likedBooks ];
               }
+              else{
+                likedBooks.removeWhere((e) => e.id == id);
+               }
               break;
             default:
               break;
           }
-
           update();
         },
         onError: (error) {
           print("=============== Home error ================");
           print(error);
           print("==========================================");
+          update();
         });
   }
 }

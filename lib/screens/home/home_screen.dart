@@ -134,6 +134,9 @@ class HomeScreen extends GetView<HomeScreenController> {
                                                   onTap: ()async{ await controller.likeBook(index);},
                                                   controller: controller,
                                                   livre: controller.listLivre[index],
+                                                  onPress: (){
+                                                    Get.toNamed(AppRoutes.DETAILS, arguments: controller.listLivre[index].id!);
+                                                  },
                                                 ),)
                                                 
                                               ],

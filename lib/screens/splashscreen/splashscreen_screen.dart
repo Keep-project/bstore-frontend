@@ -22,7 +22,7 @@ class SplashScreen extends GetView<SplashScreenController> {
                   children: [
                     const Spacer(flex: 2),
                     Container(
-                      width: 150,
+                      width: 120,
                       decoration: const BoxDecoration(
                       ),
                       child: Image.asset("assets/images/bstore-logo.png",

@@ -16,18 +16,22 @@ import 'package:path_provider/path_provider.dart' as p;
 class DetailScreenController extends GetxController {
   LoadingStatus loadingStatus = LoadingStatus.initial;
   LoadingStatus downloadStatus = LoadingStatus.initial;
+  LoadingStatus similarStatus = LoadingStatus.initial;
   final LivreService _serviceLivre = LivreServiceImpl();
 
   Livre livre = Livre();
+  List<Livre> livresimilaires = <Livre>[];
 
   final PageController pageController = PageController();
   int currentIndexPage = 0;
   bool showComments = false;
   List<Text> comments = <Text>[];
   String avatar = "";
+  bool is_like = false;
 
   String? progress;
   client.Dio? dio;
+  int bookId = 0;
 
 
   @override
@@ -35,28 +39,50 @@ class DetailScreenController extends GetxController {
     dio = client.Dio();
     await getBookById();
     await getUserData();
+    
     update();
     super.onInit();
+  }
+  Future getSimilarBooks() async {
+    similarStatus = LoadingStatus.searching;
+    await _serviceLivre.getSimilarBooks(
+      query: livre.categorie!,
+      author: livre.auteur!,
+      onSuccess: (data) {
+        // On ajout dans la liste des livres similaires en excluant le livre courant
+        livresimilaires.addAll(data.results!);
+        livresimilaires.removeWhere((x) => x.id == livre.id);
+        similarStatus = LoadingStatus.completed;
+      update();
+    }, 
+    
+    onError: (error) {
+      print("=============== Home error ================");
+      print(error);
+      print("==========================================");
+      similarStatus = LoadingStatus.failed;
+      update();
+    });
   }
 
   Future getUserData() async {
     Map<String, dynamic> userJson = await UserInfo.user();
-    
     if (userJson['avatar'] != "") {
       avatar = userJson['avatar'];
       update();
     }
   }
 
-  Future likeBook() async {
+  Future likeBook(int? index) async {
     await _serviceLivre.likeBook(
-        idLivre: livre.id!,
+        idLivre: index != -1 ? livresimilaires[index!].id! : livre.id!,
         onSuccess: (data) {
-          livre.is_like = data['results']['is_like'];
-          if (data['results']['is_like']) {
-            livre.likes = livre.likes! + 1;
-          } else {
-            livre.likes = livre.likes! - 1;
+          if (index! == -1 ){
+            is_like = data['is_like'];
+            livre = Livre.fromMap( data['results']);
+          }
+          else{
+            livresimilaires[index] = Livre.fromMap(data['results']);
           }
           update();
         },
@@ -91,7 +117,7 @@ class DetailScreenController extends GetxController {
     update();
     await _serviceLivre.getBookById(
         idLivre: Get.arguments,
-        onSuccess: (data) {
+        onSuccess: (data) async{
           livre = data.results;
           comments = List<Text>.from(livre.commentaires!.map(
             (e) => Text(
@@ -103,6 +129,7 @@ class DetailScreenController extends GetxController {
               ),
             ),
           ));
+          await  getSimilarBooks();
           loadingStatus = LoadingStatus.completed;
           update();
         },
@@ -129,10 +156,10 @@ class DetailScreenController extends GetxController {
       await dio!.download(livre.fichier!, file.path,
           onReceiveProgress: (rec, total) {
         progress = "${((rec / total) * 100).toStringAsFixed(0)} %";
-        print("Progress : $progress");
+        // print("Progress : $progress");
       });
       downloadBook();
-      print(file.path);
+      // print(file.path);
     } catch (e) {
       print(e);
       loadingStatus = LoadingStatus.failed;

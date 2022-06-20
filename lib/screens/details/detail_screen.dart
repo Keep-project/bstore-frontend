@@ -1,11 +1,11 @@
 // ignore_for_file: avoid_print
 
+import 'package:bstore/components/book_item.dart';
 import 'package:bstore/components/head_title.dart';
 import 'package:bstore/components/popular_book_item.dart';
 import 'package:bstore/core/app_colors.dart';
 import 'package:bstore/core/app_size.dart';
 import 'package:bstore/core/app_state.dart';
-import 'package:bstore/core/constants.dart';
 import 'package:bstore/router/app_router.dart';
 import 'package:bstore/screens/details/components/icon_label.dart';
 import 'package:bstore/screens/details/detail.dart';
@@ -19,7 +19,7 @@ class DetailScreen extends GetView<DetailScreenController> {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<DetailScreenController>(builder: (_) {
+    return GetBuilder<DetailScreenController>(builder: (controller) {
       return SafeArea(
         child: Scaffold(
           extendBodyBehindAppBar: true,
@@ -123,11 +123,11 @@ class DetailScreen extends GetView<DetailScreenController> {
                                       children: [
                                         CustomIconData(
                                             onTap: () async {
-                                              await controller.likeBook();
+                                              await controller.likeBook(-1);
                                             },
                                             color: kOrangeColor,
                                             size: 26,
-                                            iconData: controller.livre.is_like!
+                                            iconData: controller.is_like
                                                 ? CupertinoIcons.heart_fill
                                                 : CupertinoIcons.heart,
                                             value: controller.livre.likes!
@@ -366,7 +366,6 @@ class DetailScreen extends GetView<DetailScreenController> {
                                         ])
                                       : Container(),
                                 ]),
-
                             controller.comments.isNotEmpty
                                 ? Align(
                                     alignment: Alignment.centerLeft,
@@ -393,41 +392,30 @@ class DetailScreen extends GetView<DetailScreenController> {
                                   )
                                 : Container(),
                             const SizedBox(height: 30),
-                            Row(children: [
-                              const HeadTitle(
-                                title: "Livres similaires",
-                              ),
-                              const Spacer(),
-                              InkWell(
-                                  onTap: () {
-                                    Get.toNamed(AppRoutes.SEARCH);
-                                  },
-                                  child: const Opacity(
-                                    opacity: 0.5,
-                                    child: Padding(
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: 8.0, vertical: 4),
-                                      child: Text("Voir plus",
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w600,
-                                            color: kDarkColor86,
-                                          )),
-                                    ),
-                                  )),
-                            ]),
+                            const HeadTitle(
+                              title: "Livres similaires",
+                            ),
+                            
                             const SizedBox(height: 20),
-                            // SingleChildScrollView(
-                            //   scrollDirection: Axis.horizontal,
-                            //   child: Row(
-                            //     children: <Widget>[
-                            //       ...List.generate(
-                            //         50,
-                            //         (index) => const BookItem(),
-                            //       )
-                            //     ],
-                            //   ),
-                            // ),
+                            SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                children: <Widget>[
+                                  ...List.generate(
+                                    controller.livresimilaires.length,
+                                    (index) => 
+                                    BookItem(
+                                      onTap: ()async{ await controller.likeBook(index);},
+                                      controller: controller,
+                                      livre: controller.livresimilaires[index],
+                                      onPress: (){
+                                        Get.offAndToNamed(AppRoutes.DETAILS, arguments: controller.livresimilaires[index].id);
+                                      },
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
                             const SizedBox(height: 40),
                           ],
                         ),

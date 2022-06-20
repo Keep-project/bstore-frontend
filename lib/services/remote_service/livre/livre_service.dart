@@ -45,6 +45,12 @@ abstract class LivreService {
     Function(dynamic data)? onSuccess,
     Function(dynamic date)? onError,
   });
+  Future getSimilarBooks({
+    String? query,
+    String? author,
+    Function(dynamic data)? onSuccess,
+    Function(dynamic date)? onError,
+  });
 
   Future getBookForUser({
     String? query,

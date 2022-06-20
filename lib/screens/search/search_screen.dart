@@ -128,6 +128,9 @@ class SearchScreen extends GetView<SearchController> {
                                           onTap: () async {
                                             await controller.likeBook(index);
                                           },
+                                          onPress: (){
+                                            Get.toNamed(AppRoutes.DETAILS, arguments: controller.listLivre[index].id!);
+                                          },
                                           controller: controller,
                                           livre: controller.listLivre[index])),
                                     controller.infinityStatus == LoadingStatus.searching ? Container(

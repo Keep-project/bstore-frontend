@@ -89,6 +89,9 @@ class ProfilScreen extends GetView<ProfilScreenController> {
                                       controller: controller,
                                       livre: controller.likedBooks[index],
                                       onTap: () async { controller.likeBook( controller.likedBooks[index].id!,index, 'like');},
+                                      onPress: (){
+                                        Get.toNamed(AppRoutes.DETAILS, arguments: controller.likedBooks[index].id!);
+                                      },
                                     ),
                                     
                                     Positioned(
@@ -161,6 +164,9 @@ class ProfilScreen extends GetView<ProfilScreenController> {
                                       controller: controller,
                                       livre: controller.uploadsBooks[index],
                                       onTap: () async { controller.likeBook(controller.uploadsBooks[index].id!, index, 'upload');},
+                                      onPress: (){
+                                        Get.toNamed(AppRoutes.DETAILS, arguments: controller.uploadsBooks[index].id!);
+                                      },
                                     ),
                                     
                                     Positioned(
@@ -220,7 +226,7 @@ class ProfilScreen extends GetView<ProfilScreenController> {
                               clipBehavior: Clip.none,
                               children:  [
                                 PopularBookItem(
-                                  onTap: () async{ await controller.likeBook( controller.downloadsBooks[index].id!, index, 'download');},
+                                  onTap: () async{ await controller.likeBook(controller.downloadsBooks[index].id!, index, 'download');},
                                   livre: controller.downloadsBooks[index],
                                     margin:
                                        const EdgeInsets.only(bottom: kDefaultMargin * 1.8)),

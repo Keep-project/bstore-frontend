@@ -124,17 +124,14 @@ class SearchController extends GetxController {
     await _serviceLivre.likeBook(
         idLivre: listLivre[index].id!,
         onSuccess: (data) {
-          if (data['results']['is_like']) {
-            listLivre[index].likes = listLivre[index].likes! + 1;
-          } else {
-            listLivre[index].likes = listLivre[index].likes! - 1;
-          }
+          listLivre[index] = Livre.fromMap(data['results']);
           update();
         },
         onError: (error) {
           print("=============== Home error ================");
           print(error);
           print("==========================================");
+          update();
         });
   }
 }

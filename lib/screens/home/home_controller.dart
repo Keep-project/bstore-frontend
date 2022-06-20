@@ -106,11 +106,8 @@ class HomeScreenController extends GetxController{
   
     await _serviceLivre.likeBook(
       idLivre: listLivre[index].id!,
-      onSuccess:(data){
-        if (data['results']['is_like']){
-          listLivre[index].likes = listLivre[index].likes! + 1;
-        }
-        else{listLivre[index].likes = listLivre[index].likes! - 1;}
+      onSuccess:(data) async{
+        listLivre[index] = Livre.fromMap(data['results']);
         update();
       },
       onError:(error){
@@ -125,10 +122,7 @@ class HomeScreenController extends GetxController{
     await _serviceLivre.likeBook(
       idLivre: popularLivreBooks[index].id!,
       onSuccess:(data){
-        if (data['results']['is_like']){
-          popularLivreBooks[index].likes = popularLivreBooks[index].likes! + 1;
-        }
-        else{popularLivreBooks[index].likes = popularLivreBooks[index].likes! - 1;}
+        popularLivreBooks[index] = Livre.fromMap(data['results']);
         update();
       },
       onError:(error){
@@ -137,6 +131,22 @@ class HomeScreenController extends GetxController{
         print("==========================================");
       }
     );
+  }
+
+  Future getBookById(int id) async {
+    update();
+    await _serviceLivre.getBookById(
+        idLivre: id,
+        onSuccess: (data) {
+          // livre = data.results;
+          update();
+        },
+        onError: (error) {
+          print("======================= Détail error =====================");
+          print(error.response!.statusCode);
+          print("==========================================================");
+          update();
+        });
   }
 
 

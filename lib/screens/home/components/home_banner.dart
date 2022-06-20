@@ -48,7 +48,7 @@ class HomeBanner extends StatelessWidget {
                     style: Theme.of(context).textTheme.bodyText1!.copyWith(
                       color: kWhiteColor,
                       fontStyle: FontStyle.italic,
-                      fontSize: 18,
+                      fontSize: 14,
                       fontWeight: FontWeight.w600,
                     )
                   ),

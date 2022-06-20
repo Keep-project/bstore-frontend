@@ -189,4 +189,23 @@ class LivreServiceImpl implements LivreService {
       }
     });
   }
+
+  @override
+  Future getSimilarBooks(
+      {String? query,
+      String? author,
+      Function(dynamic data)? onSuccess,
+      Function(dynamic date)? onError}) async {
+    ApiRequest(
+      url: "${Constants.API_URL}/book/similars/?query=$query&author=$author",
+      data: {},
+      token: await _localAuth.getToken(),
+    ).get(onSuccess: (data) {
+      onSuccess!(LivreResponseModel.fromMap(data));
+    }, onError: (error) {
+      if (error != null) {
+        onError!(error);
+      }
+    });
+  }
 }

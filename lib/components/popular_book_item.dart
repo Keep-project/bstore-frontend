@@ -108,7 +108,7 @@ class PopularBookItem extends StatelessWidget {
                             Expanded(
                               child: CustomIconData(
                                 onTap: ()async{ await onTap!();},
-                                  iconData: CupertinoIcons.heart_fill,
+                                  iconData: livre.likes! > 0 ? CupertinoIcons.heart_fill :  CupertinoIcons.heart,
                                   value: "${livre.likes!}",
                                   size: 20,
                                   color: kOrangeColor.withOpacity(.8)),

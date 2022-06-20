@@ -7,7 +7,6 @@ import 'package:bstore/services/local_service/authentication/authentication_serv
 
 class UserInfo {
   
-  
   static Future<dynamic> user() async {
     final LocalAuthenticationServices _localAuth =
       LocalAuthenticationServicesImpl();
