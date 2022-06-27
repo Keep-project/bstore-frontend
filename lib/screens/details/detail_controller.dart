@@ -15,7 +15,7 @@ import 'package:dio/dio.dart' as client;
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart' as p;
-//import 'package:permission_handler/permission_handler.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class DetailScreenController extends GetxController {
   LoadingStatus loadingStatus = LoadingStatus.initial;
@@ -151,25 +151,11 @@ class DetailScreenController extends GetxController {
         });
   }
 
-  Future<List<Directory>?> _getExternalstoragePath() {
-    return p.getExternalStorageDirectories(type: p.StorageDirectory.downloads);
-  }
-
   Future downloadAndSaveFileToStorage() async {
     loadingStatus = LoadingStatus.searching;
     try {
-      final dirList = await _getExternalstoragePath();
-      final path = dirList![0].path;
-      final file = File(
-          "$path/${livre.titre!.toString().capitalizeFirst}.${livre.extension}");
-      await dio!.download(livre.fichier!, file.path,
-          onReceiveProgress: (rec, total) {
-        progress = "${((rec / total) * 100).toStringAsFixed(0)} %";
-        // print("Progress : $progress");
-      });
+      await saveFile(livre.fichier!, "${livre.titre!.toString().capitalizeFirst}.${livre.extension}");
       await downloadBook();
-      //await saveFile(livre.fichier!, "monpdf.pdf");
-      // print(file.path);
     } catch (e) {
       print(e);
       loadingStatus = LoadingStatus.failed;
@@ -231,103 +217,67 @@ class DetailScreenController extends GetxController {
     );
   }
 
+  Future<bool> saveFile(String url, String filename) async {
+    Directory? directory; 
+    try {
+      if (Platform.isAndroid) {
+        if ( await _requestPermission(Permission.storage)) {
+          directory = await p.getExternalStorageDirectory();
+          String newPath = "";
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+          List<String> folders = directory!.path.split("/");
 
+          for (int x = 1; x < folders.length; x++) {
+            String folder = folders[x];
+            if (folder != "Android") {
+              newPath += "/$folder";
+            }
+            else {
+              break;
+            }
+          }
+          newPath = "$newPath/Downloads";
+          directory = Directory(newPath);
 
-// Future<String> getFilePath() async {
-//     Directory appDocumentsDirectory = await p.getApplicationDocumentsDirectory(); // 1
-//     String appDocumentsPath = appDocumentsDirectory.path; // 2
-//     String filePath = '$appDocumentsPath/demoTextFile.txt'; // 3
-//     print("C'est ici");
-//     print(filePath);
-//     return filePath;
-// }
+          if ( !await directory.exists() ) {
+            await directory.create( recursive: true );
+          }
+          if ( await directory.exists() ) {
+            File file = File("${directory.path}/$filename");
+            await dio!.download(url, file.path,
+              onReceiveProgress: (rec, total) {
+                progress = "${((rec / total) * 100).toStringAsFixed(0)} %";
+              });
+          }
+          return true;
+        }
+        else {
+          return false;
+        }
 
-// Future saveFiles() async {
-//     File file = File(await getFilePath()); // 1
-//     file.writeAsString("This is my demo text that will be saved to : demoTextFile.txt"); // 2
-//   }
-
-// Future readFile() async {
-//     File file = File(await getFilePath()); // 1
-//     String fileContent = await file.readAsString(); // 2
-
-//     print('File Content: $fileContent');
-// }
-
-/////////////////////////////////////////////////////////////////////
-
-  // Future checkPer() async {
-  //   await Future.delayed(const Duration(seconds: 1));
-  //   bool checkResult = await SimplePermissions.checkPermission(
-  //       Permission.WriteExternalStorage);
-  //   if (!checkResult) {
-  //     var status = await SimplePermissions.requestPermission(
-  //         Permission.WriteExternalStorage);
-  //     //print("permission request result is " + resReq.toString());
-  //     if (status == PermissionStatus.authorized) {
-  //       await downloadFile(livre.fichier!, "${livre.titre!.toString().capitalizeFirst}.${livre.extension}");
-  //     }
-  //   } else {
-  //     await downloadFile(livre.fichier!, "${livre.titre!.toString().capitalizeFirst}.${livre.extension}");
-  //   }
-  // }
-
-  Future<void> downloadFile(String url, String fileName) async {
- 
-
-    var dir = await p.getExternalStorageDirectory();
-    var knockDir =
-    await Directory('/storage/Bookstore').create(recursive: true);
-    print('NEW DIRECTORY');
-    print(knockDir.path);
-    await dio!.download(url, '${knockDir.path}/$fileName',
-      onReceiveProgress: (rec, total) {
-          print("Rec: $rec , Total: $total");
-    });
+      }
+      return false;
+    }
+    catch (e) {
+      print(e);
+      return false;
+    }
     
   }
 
-  ///////////////////////////////////////////////////////////////////////////////////////
-  
-  // Future<bool> saveFile(String url, String filename) async {
-  //   Directory? directory; 
-
-  //   try {
-  //     if (Platform.isAndroid) {
-  //       if ( await _requestPermission(Permission.storage)) {
-  //         directory = await p.getExternalStorageDirectory();
-  //         print(directory!.path);
-  //         return true;
-  //       }
-  //       else {
-  //         return false;
-  //       }
-
-  //     }
-  //     return false;
-  //   }
-  //   catch (e) {
-  //     print(e);
-  //     return false;
-  //   }
-    
-  // }
-
-  // Future<bool> _requestPermission(Permission permission) async {
-  //   if (await permission.isGranted) {
-  //     return true;
-  //   }
-  //   else {
-  //     var result = await permission.request();
-  //     if (result == PermissionStatus.granted) {
-  //       return true;
-  //     }
-  //     else {
-  //       return false;
-  //     }
-  //   }
-  // }
+  Future<bool> _requestPermission(Permission permission) async {
+    if (await permission.isGranted) {
+      return true;
+    }
+    else {
+      var result = await permission.request();
+      if (result == PermissionStatus.granted) {
+        return true;
+      }
+      else {
+        return false;
+      }
+    }
+  }
 
 }
