@@ -26,4 +26,26 @@ class UserServiceImpl implements UserService {
           }
         );
   }
+  
+  @override
+  Future<void> updateUserData({
+    int? userId,
+    userData,
+    Function(dynamic data)? onSuccess,
+    Function(dynamic error)? onError}) async {
+    ApiRequest(
+          url: "${Constants.API_URL}/book/utilisateur/$userId/",
+          data: userData,
+          token: await _localAuth.getToken(),
+        ).put(
+          onSuccess: (data){
+            onSuccess!(UserRequestModel.fromMap(data));
+          },
+          onError: (error){
+            if ( error != null){
+              onError!(error);
+            }
+          }
+        );
+  }
 }

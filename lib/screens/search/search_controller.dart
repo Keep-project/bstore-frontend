@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_print
 
 import 'package:bstore/core/app_state.dart';
+import 'package:bstore/core/app_user.dart';
 import 'package:bstore/models/response_data_model.dart/livre_model.dart';
 import 'package:bstore/services/remote_service/livre/livre_service.dart';
 import 'package:bstore/services/remote_service/livre/livre_service_impl.dart';
@@ -18,6 +19,8 @@ class SearchController extends GetxController {
   List<Livre> listLivre = <Livre>[];
   List<Livre> listLivreCopy = <Livre>[];
   String idPage = "";
+  String avatar = "";
+  String message = "";
 
   int _count = 0;
   var next, previous;
@@ -26,9 +29,12 @@ class SearchController extends GetxController {
 
   @override
   void onInit() async {
+    await getUserData();
     idPage = Get.arguments['id'];
+    message = Get.arguments['message'];
     switch (idPage) {
       case 'search':
+        
         await filterBooksByTitleOrDescription();
         break;
 
@@ -63,6 +69,14 @@ class SearchController extends GetxController {
     super.dispose();
   }
 
+   Future getUserData() async {
+    Map<String, dynamic> userJson = await UserInfo.user();
+    if (userJson['avatar'] != "") {
+      avatar = userJson['avatar'];
+      update();
+    }
+  }
+
   Future filterBooksByCategoryId() async {
     searchStatus = LoadingStatus.searching;
     await _serviceLivre.getCategoriesById(
@@ -91,6 +105,28 @@ class SearchController extends GetxController {
           next = data.next;
           previous = data.previous;
           listLivre.addAll(data.results!);
+          infinityStatus = LoadingStatus.completed;
+      update();
+    }, onError: (error) {
+      print("=============== Home error ================");
+      print(error.response!.data);
+      print("==========================================");
+      infinityStatus = LoadingStatus.failed;
+      update();
+    });
+  }
+
+   Future filterBooks() async {
+    message = 'Résultat pour "${searchTextEditingController.text.trim()}"';
+    infinityStatus = LoadingStatus.searching;
+    update();
+    await _serviceLivre.filterBooksByTitleOrDescription(
+      query: searchTextEditingController.text.trim(),
+      onSuccess: (data) {
+        _count = data.count;
+          next = data.next;
+          previous = data.previous;
+          listLivre = data.results!;
           infinityStatus = LoadingStatus.completed;
       update();
     }, onError: (error) {

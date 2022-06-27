@@ -40,22 +40,45 @@ class ProfilSection extends StatelessWidget {
                         child: Icon(CupertinoIcons.person_fill,
                             color: kWhiteColor, size: 36))) :
 
-                Container(
-                    height: 75,
-                    width: 75,
-                    clipBehavior: Clip.antiAlias,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        width: 2,
-                        color: kWhiteColor,
+                GestureDetector(
+                  onTap: (){
+                    controller.chooseImage();
+                  },
+                  child: Stack(
+                    children: [
+                      Container(
+                          height: 75,
+                          width: 75,
+                          clipBehavior: Clip.antiAlias,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              width: 2,
+                              color: kWhiteColor,
+                            ),
+                          ),
+                          child: Image.network(controller.user.avatar!.toString(), fit: BoxFit.fill),
+                          ),
+                      Positioned(
+                        top: 0,
+                        right: 0,
+                        child:  Container(
+                          height: 30,
+                          width: 30,
+                          decoration: BoxDecoration(
+                            color: Colors.grey.withOpacity(.8),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Center(
+                            child: Icon(Icons.edit, size: 20, color: kDarkColor90),
+                          ),
+                        ),
                       ),
-                    ),
-                    
-                    child: Image.network(controller.user.avatar!.toString(), fit: BoxFit.fill),
-                    ),
+                    ],
+                  ),
+                ),
                 const SizedBox(height: kDefaultPadding / 2),
-                Text(controller.user.username.toString(),
+                Text(controller.user.username.toString().toUpperCase(),
                   style: const TextStyle(
                     fontSize: 18,
                     color: kWhiteColor,

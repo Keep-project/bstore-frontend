@@ -8,8 +8,9 @@ class SearchBar extends StatelessWidget {
   final EdgeInsetsGeometry? contentPadding;
   final double? iconSize;
   final TextEditingController controller;
+  final Function()? onTap;
   const SearchBar({
-    Key? key, this.contentPadding, this.iconSize, required this.controller,
+    Key? key, this.contentPadding, this.iconSize, required this.controller, required this.onTap
   }) : super(key: key);
 
   @override
@@ -43,7 +44,7 @@ class SearchBar extends StatelessWidget {
                 });
                 return;
               }
-              Get.toNamed(AppRoutes.SEARCH, arguments: {'id': 'search','message': 'Resultat pour "${controller.text.trim()}"', 'query': controller.text.trim()});
+              onTap!();
             },
             child: Icon(CupertinoIcons.search, size: iconSize ?? 36, color: kOrangeColor)),
           hintText: "Rechercher un livre ...",

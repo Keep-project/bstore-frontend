@@ -7,6 +7,7 @@
 import 'package:bstore/core/app_state.dart';
 import 'package:bstore/models/response_data_model.dart/category_model.dart';
 import 'package:bstore/models/response_data_model.dart/livre_model.dart';
+import 'package:bstore/router/app_router.dart';
 import 'package:bstore/services/remote_service/livre/livre_service.dart';
 import 'package:bstore/services/remote_service/livre/livre_service_impl.dart';
 import 'package:flutter/cupertino.dart';
@@ -88,6 +89,7 @@ class HomeScreenController extends GetxController{
     await _serviceLivre.categoriesList(
       onSuccess:(data){
         listCategories = List<Category>.from(data.map((c) => Category.fromMap(c)));
+        
         categoriesListStatus = LoadingStatus.completed;
         update();
       },
@@ -95,6 +97,9 @@ class HomeScreenController extends GetxController{
         print("=============== Home error ================");
         print(error.response!.data);
         print(error.response!.statusCode);
+        if (error.response!.statusCode == 401){
+          Get.offAndToNamed(AppRoutes.LOGIN);
+        }
         print("==========================================");
         categoriesListStatus = LoadingStatus.failed;
         update();
@@ -107,7 +112,9 @@ class HomeScreenController extends GetxController{
     await _serviceLivre.likeBook(
       idLivre: listLivre[index].id!,
       onSuccess:(data) async{
+        int nb = listLivre[index].nbcommentaires!;
         listLivre[index] = Livre.fromMap(data['results']);
+        listLivre[index].nbcommentaires = nb;
         update();
       },
       onError:(error){

@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_print
 
 import 'package:bstore/components/book_item.dart';
+import 'package:bstore/components/custom_text_field.dart';
 import 'package:bstore/components/head_title.dart';
 import 'package:bstore/components/popular_book_item.dart';
 import 'package:bstore/core/app_colors.dart';
@@ -16,7 +17,7 @@ import 'package:share_plus/share_plus.dart';
 
 class DetailScreen extends GetView<DetailScreenController> {
   const DetailScreen({Key? key}) : super(key: key);
-
+  
   @override
   Widget build(BuildContext context) {
     return GetBuilder<DetailScreenController>(builder: (controller) {
@@ -110,7 +111,7 @@ class DetailScreen extends GetView<DetailScreenController> {
                                     Opacity(
                                       opacity: 0.6,
                                       child: Text(
-                                        controller.livre.auteur!.toString(),
+                                        controller.livre.auteur!.toString().capitalizeFirst!,
                                         textAlign: TextAlign.center,
                                         style: const TextStyle(
                                           fontSize: 14,
@@ -132,6 +133,24 @@ class DetailScreen extends GetView<DetailScreenController> {
                                                 : CupertinoIcons.heart,
                                             value: controller.livre.likes!
                                                 .toString()),
+                                              const  SizedBox(width: kDefaultPadding/2),
+                                        GestureDetector(
+                                          onTap: () {
+                                            Get.offAndToNamed(AppRoutes.BOOKFORM, arguments: controller.livre);
+                                          },
+                                          child: Container(
+                                            height: 30,
+                                            width: 30,
+                                            decoration: BoxDecoration(
+                                              color: Colors.grey.withOpacity(.2),
+                                              shape: BoxShape.circle,
+                                            ),
+                                            child: const Center(
+                                              child: Icon(Icons.edit, size: 20, color: kDarkColor90),
+                                            ),
+                                          ),
+                                        ),
+                                        
                                       ],
                                     ),
                                   ]),
@@ -263,9 +282,14 @@ class DetailScreen extends GetView<DetailScreenController> {
                                             const SizedBox(width: 8),
                                             controller.downloadStatus ==
                                                     LoadingStatus.searching
-                                                ? const CircularProgressIndicator(
-                                                    color: kWhiteColor,
-                                                    strokeWidth: 2)
+                                                ? Container(
+                                                  height: 25,
+                                                  width: 25,
+                                                  decoration: const BoxDecoration(),
+                                                  child: const CircularProgressIndicator(
+                                                      color: kWhiteColor,
+                                                      strokeWidth: 2),
+                                                )
                                                 : const Icon(
                                                     CupertinoIcons
                                                         .cloud_download_fill,
@@ -281,33 +305,47 @@ class DetailScreen extends GetView<DetailScreenController> {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Row(children: <Widget>[
-                                    Text(
-                                      "Avis",
-                                      style: TextStyle(
-                                        color: Colors.black.withOpacity(0.8),
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w600,
-                                      ),
+                                    GestureDetector(
+                                      onTap: () {
+                                         controller.showComments =
+                                            !controller.showComments;
+                                        controller.update();
+                                      },
+                                      child: Row(
+                                        children: [
+                                          Text(
+                                          "Avis",
+                                          style: TextStyle(
+                                            color: !controller.showComments
+                                                ? Colors.black
+                                                : Colors.black.withOpacity(0.5),
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          width: 8,
+                                        ),
+                                        Text(
+                                          "4.2",
+                                          style: TextStyle(
+                                            color: kDarkColor90.withOpacity(0.8),
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          width: 3,
+                                        ),
+                                        ...List.generate(
+                                            4,
+                                            (index) => const Icon(
+                                                CupertinoIcons.star_fill,
+                                                color: kOrangeColor,
+                                                size: 14)),
+                                          ],
+                                        ),
                                     ),
-                                    const SizedBox(
-                                      width: 8,
-                                    ),
-                                    Text(
-                                      "4.2",
-                                      style: TextStyle(
-                                        color: kDarkColor90.withOpacity(0.8),
-                                        fontSize: 16,
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      width: 3,
-                                    ),
-                                    ...List.generate(
-                                        4,
-                                        (index) => const Icon(
-                                            CupertinoIcons.star_fill,
-                                            color: kOrangeColor,
-                                            size: 14)),
+                                    
                                     TextButton(
                                       onPressed: () {
                                         controller.showComments =
@@ -329,7 +367,7 @@ class DetailScreen extends GetView<DetailScreenController> {
                                       ),
                                     ),
                                   ]),
-                                  controller.comments.isNotEmpty
+                                  controller.comments.isNotEmpty && !controller.showComments
                                       ? Row(children: <Widget>[
                                           IconButton(
                                               onPressed: () {
@@ -366,7 +404,7 @@ class DetailScreen extends GetView<DetailScreenController> {
                                         ])
                                       : Container(),
                                 ]),
-                            controller.comments.isNotEmpty
+                            controller.comments.isNotEmpty && !controller.showComments
                                 ? Align(
                                     alignment: Alignment.centerLeft,
                                     child: ConstrainedBox(
@@ -390,7 +428,50 @@ class DetailScreen extends GetView<DetailScreenController> {
                                       ),
                                     ),
                                   )
-                                : Container(),
+                                : Container(
+                                  decoration: const BoxDecoration(),
+                                  child: Column(
+                                    children: [
+                                      CustomTextField(
+                                        hintText: "Tapez votre commentaire ici...",
+                                        helpText: "",
+                                        controller: controller.commentTextController,
+                                        maxLines: 10,
+                                        minLines: 5
+                                      ),
+                                      const SizedBox(
+                                        height: kDefaultPadding /2
+                                      ),
+                                      Row(
+                                        children: [
+                                          const Spacer(),
+                                          GestureDetector(
+                                            onTap: () async {
+                                              controller.sendComment(context);
+                                            },
+                                            child: Container(
+                                              width: 100,
+                                              padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding/2),
+                                              decoration: BoxDecoration(
+                                                color: kGreenColor,
+                                                borderRadius: BorderRadius.circular(kDefaultRadius/2)
+                                              ),
+                                              child: const Center(
+                                                child: Text("Envoyer",
+                                                 style: TextStyle(
+                                                  color: kWhiteColor,
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w600, 
+                                                 )
+                                                ),
+                                              ) 
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
                             const SizedBox(height: 30),
                             const HeadTitle(
                               title: "Livres similaires",
@@ -408,8 +489,9 @@ class DetailScreen extends GetView<DetailScreenController> {
                                       onTap: ()async{ await controller.likeBook(index);},
                                       controller: controller,
                                       livre: controller.livresimilaires[index],
-                                      onPress: (){
-                                        Get.offAndToNamed(AppRoutes.DETAILS, arguments: controller.livresimilaires[index].id);
+                                      onPress: () async {
+                                        Get.offAndToNamed(AppRoutes.DETAILS, arguments: controller.livresimilaires[index].id, );
+                                        controller.onInit();
                                       },
                                     ),
                                   )
@@ -443,11 +525,7 @@ class DetailScreen extends GetView<DetailScreenController> {
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: GestureDetector(
-              // onTap: () {
-              //   Get.toNamed(AppRoutes.BOOKFORM);
-              // },
               onTap: () async {
-                // await Share.share("Maisonier Lite vous propose: \n\n ${controller.annonce!.images![0]}");
                 await Share.share(
                     "${controller.livre.titre!} \n${controller.livre.description!}\nNous sommes là pour vous. Cliquez sur le lien.  \n\n${controller.livre.fichier!}");
               },
@@ -461,7 +539,7 @@ class DetailScreen extends GetView<DetailScreenController> {
           padding: const EdgeInsets.all(8.0),
           child: GestureDetector(
             onTap: () {
-              Get.offNamed(AppRoutes.DASHBORD);
+              Get.toNamed(AppRoutes.DASHBORD);
             },
             child: controller.avatar == ""
                 ? const Icon(CupertinoIcons.person_fill,

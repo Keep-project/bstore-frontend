@@ -5,4 +5,10 @@ abstract class UserService {
     Function(dynamic data)? onSuccess,
     Function(dynamic error)? onError,}
   );
+  Future<void> updateUserData({
+    int? userId,
+    dynamic userData,
+    Function(dynamic data)? onSuccess,
+    Function(dynamic error)? onError,}
+  );
 }

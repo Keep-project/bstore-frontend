@@ -208,4 +208,42 @@ class LivreServiceImpl implements LivreService {
       }
     });
   }
+  
+  @override
+  Future sendComment({
+    int? idLivre,
+    String? content,
+    Function(dynamic data)?
+    onSuccess, Function(dynamic date)?
+    onError}) async {
+    ApiRequest(
+      url: "${Constants.API_URL}/book/$idLivre/commentaire/",
+      data: {'contenu': content!},
+      token: await _localAuth.getToken(),
+    ).post(onSuccess: (data) {
+      onSuccess!(data);
+    }, onError: (error) {
+      if (error != null) {
+        onError!(error);
+      }
+    });
+  }
+  
+  @override
+  Future<void> updateBook({
+    livreModel, int? idLivre,
+    Function(dynamic data)? onSuccess,
+    Function(dynamic data)? onError}) async {
+    ApiRequest(
+      url: "${Constants.API_URL}/book/$idLivre",
+      data: livreModel,
+      token: await _localAuth.getToken(),
+    ).put(onSuccess: (data) {
+      onSuccess!(data);
+    }, onError: (error) {
+      if (error != null) {
+        onError!(error);
+      }
+    });
+  }
 }

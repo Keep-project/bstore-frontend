@@ -5,8 +5,9 @@ import 'package:flutter/material.dart';
 
 class CustomButton extends StatelessWidget {
   final Function()? onTap;
+  final String? title;
   const CustomButton({
-    Key? key, required this.onTap,
+    Key? key, required this.onTap, required this.title,
   }) : super(key: key);
 
   @override
@@ -21,9 +22,9 @@ class CustomButton extends StatelessWidget {
         decoration: BoxDecoration(
             color: kOrangeColor,
             borderRadius: BorderRadius.circular(8)),
-        child: const Center(
-          child: Text("Enregistrer",
-            style: TextStyle(
+        child: Center(
+          child: Text(title!,
+            style: const TextStyle(
               color: kWhiteColor,
               fontSize: 18,
               fontWeight: FontWeight.bold,

@@ -11,6 +11,7 @@ import 'package:bstore/router/app_router.dart';
 import 'package:bstore/screens/home/components/category_item.dart';
 import 'package:bstore/screens/home/components/home_banner.dart';
 import 'package:bstore/screens/home/home.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -36,7 +37,11 @@ class HomeScreen extends GetView<HomeScreenController> {
                               Padding(
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: kDefaultPadding),
-                                child: SearchBar(controller: controller.searchTextEditingController),
+                                child: SearchBar(controller: controller.searchTextEditingController,
+                                  onTap: () {
+                                    Get.toNamed(AppRoutes.SEARCH, arguments: {'id': 'search','message': 'Resultat pour "${controller.searchTextEditingController.text.trim()}"', 'query': controller.searchTextEditingController.text.trim()});
+                                  },
+                                ),
                               ),
                               const SizedBox(height: 12),
                               Expanded(
@@ -180,6 +185,63 @@ class HomeScreen extends GetView<HomeScreenController> {
                                         
                                       ]),
                                 ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          height: 50,
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: kWhiteColor,
+                            boxShadow: [
+                              BoxShadow(
+                                offset: const Offset(0, 10),
+                                blurRadius: 20,
+                                color: kDarkColor90.withOpacity(0.2),
+                              ),
+                            ],
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              GestureDetector(
+                                onTap: (){Get.offAndToNamed(AppRoutes.HOME);},
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(Icons.home_outlined, size: 26, color: kOrangeColor.withOpacity(0.6)),
+                                    const Text("Accueil",
+                                      style: TextStyle(
+                                        color: kOrangeColor,
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 10,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Container(
+                                height: 40,
+                                width: 40,
+                                decoration:  BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: kDarkColor90,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      offset: const Offset(0, 10),
+                                      blurRadius: 30,
+                                      color: kDarkColor90.withOpacity(.6),
+                                    ),
+                                  ],
+                                ),
+                                child: const Center(
+                                  child: Icon(Icons.add, size: 30, color: kWhiteColor),
+                                ),
+                              ),
+                              GestureDetector(
+                                onTap: (){Get.offAndToNamed(AppRoutes.DASHBORD);},
+                                child: Icon( CupertinoIcons.person, size: 26, color: Colors.black.withOpacity(.6)),
                               ),
                             ],
                           ),

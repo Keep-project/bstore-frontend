@@ -2,6 +2,7 @@
 
 import 'dart:convert';
 
+import 'package:bstore/core/app_snackbar.dart';
 import 'package:bstore/core/app_state.dart';
 import 'package:bstore/models/request_data_model.dart/login_model.dart';
 import 'package:bstore/router/app_router.dart';
@@ -12,6 +13,7 @@ import 'package:bstore/services/remote_service/authentication/authentication_ser
 import 'package:bstore/services/remote_service/user/user_service.dart';
 import 'package:bstore/services/remote_service/user/user_service_impl.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class LoginScreenController extends GetxController {
@@ -38,7 +40,7 @@ class LoginScreenController extends GetxController {
     await _userService.getUser(onSuccess: (data) async {
       await _localAuth.saveUser(json.encode(data.results!.toMap()));
       // Map<String, dynamic> userJson = await UserInfo.user();
-      Future.delayed(const Duration(seconds: 3), (){
+      Future.delayed(const Duration(seconds: 1), (){
         Get.offAllNamed(AppRoutes.HOME);
         loginStatus = LoadingStatus.completed;
         update();
@@ -52,7 +54,7 @@ class LoginScreenController extends GetxController {
     });
   }
 
-  Future login() async {
+  Future login(BuildContext context) async {
     loginStatus = LoadingStatus.searching;
     update();
     await _authService.login(
@@ -66,11 +68,18 @@ class LoginScreenController extends GetxController {
           await getUser();
         },
         onLoginError: (error) {
-          print("============ Login =============");
-          if (error.response!.statusCode == 401) {
-            print("Compte inexistant");
+
+          
+          if (error.response!.statusCode == 400) {
+            CustomSnacbar.showMessage(context, "Le champs nom ou mot de passe ne peut être vide !");
           }
+          
+          if (error.response!.statusCode == 401) {
+            CustomSnacbar.showMessage(context, "Aucun compte actif avec pour nom '${textEditingNom.text}' et mot de passe '${textEditingPassword.text}'");
+          }
+          print("============ Login =============");
           print("Une erreur est survenue ${error.response!.data}");
+          print(error.response!.statusCode);
           print("================================");
           loginStatus = LoadingStatus.failed;
           update();

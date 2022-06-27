@@ -45,7 +45,7 @@ class Livre {
   final int? nbpages;
   int? likes;
   int? telecharges;
-  final int? nbcommentaires;
+  int? nbcommentaires;
   final List<Commentaire>? commentaires;
   final String? image;
   final String? extension;
@@ -53,7 +53,7 @@ class Livre {
   final String? langue;
   final String? auteur;
   final String? editeur;
-  final DateTime? datepub;
+  final String? datepub;
   final DateTime? created_at;
   final DateTime? updated_at;
   bool? is_like;
@@ -99,7 +99,7 @@ class Livre {
         langue: json['langue'] ?? "",
         auteur: json['auteur'] ?? "",
         editeur: json['editeur'] ?? "",
-        datepub: DateTime.parse(json['datepub']),
+        datepub: json['datepub'],
         created_at: DateTime.parse(json['created_at']),
         updated_at: DateTime.parse(json['updated_at']),
         is_like: json['is_like'] ?? false,
@@ -122,7 +122,7 @@ class Livre {
     'langue': langue,
     'auteur': auteur,
     'editeur': editeur,
-    'datepub': datepub!.toIso8601String(),
+    'datepub': datepub,
     'created_at': created_at!.toIso8601String(),
     'updated_at': updated_at!.toIso8601String(),
     'is_like': is_like

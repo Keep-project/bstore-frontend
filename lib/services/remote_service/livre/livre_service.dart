@@ -5,6 +5,13 @@ abstract class LivreService {
     Function(dynamic data)? onError,
   });
 
+  Future<void> updateBook({
+    dynamic livreModel,
+    int? idLivre,
+    Function(dynamic data)? onSuccess,
+    Function(dynamic data)? onError,
+  });
+
   Future listBooks({
     String? url,
     Function(dynamic data)? onSuccess,
@@ -25,6 +32,13 @@ abstract class LivreService {
 
   Future likeBook({
     int? idLivre,
+    Function(dynamic data)? onSuccess,
+    Function(dynamic date)? onError,
+  });
+
+  Future sendComment({
+    int? idLivre,
+    String? content,
     Function(dynamic data)? onSuccess,
     Function(dynamic date)? onError,
   });

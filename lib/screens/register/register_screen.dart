@@ -4,6 +4,7 @@ import 'package:bstore/components/custom_button.dart';
 import 'package:bstore/components/custom_text_field.dart';
 import 'package:bstore/core/app_colors.dart';
 import 'package:bstore/core/app_size.dart';
+import 'package:bstore/core/app_state.dart';
 import 'package:bstore/router/app_router.dart';
 import 'package:bstore/screens/register/register.dart';
 import 'package:flutter/material.dart';
@@ -73,7 +74,18 @@ class RegisterScreen extends GetView<RegisterScreenController> {
                                 helpText: "Mot de passe",
                               ),
                               const SizedBox(height: kDefaultPadding*3),
-                              CustomButton(onTap: ()async{ await controller.register();},),
+                              controller.registerStatus == LoadingStatus.searching ?
+                            Container(
+                              height: 45,
+                              width: double.infinity,
+                              decoration: const BoxDecoration(),
+                              child: const Center(
+                                child: CircularProgressIndicator(color: kOrangeColor,),
+                              ),
+                            ) :
+                              CustomButton(
+                                title: "Créer mon compte",
+                                onTap: ()async{ await controller.register(context);},),
                               const SizedBox(height: kDefaultPadding),
                               Row(
                                 children: [

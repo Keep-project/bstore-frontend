@@ -47,5 +47,24 @@ class LocalAuthenticationServicesImpl implements LocalAuthenticationServices{
     SharedPreferences preferences = await  SharedPreferences.getInstance();
     return preferences.getString(Constants.BSTORE_USER) ?? "";
   }
+  
+  @override
+  Future<String?> getBookId() async {
+    SharedPreferences preferences = await  SharedPreferences.getInstance();
+    return preferences.getString(Constants.BSTORE_BOOK_ID) ?? "";
+  }
+  
+  @override
+  Future<void> saveBookId(String id) async {
+    SharedPreferences preferences = await  SharedPreferences.getInstance();
+    preferences.setString(Constants.BSTORE_BOOK_ID, id);
+  }
+  
+  @override
+  Future<bool> deleteBookId() async {
+    SharedPreferences preferences = await  SharedPreferences.getInstance();
+    preferences.remove(Constants.BSTORE_BOOK_ID);
+    return true;
+  }
 
 }

@@ -38,7 +38,7 @@ class SearchScreen extends GetView<SearchController> {
                     child: RichText(
                         text: TextSpan(children: [
                       TextSpan(
-                        text: "${Get.arguments['message']} ",
+                        text: "${ controller.message } ",
                         style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w600,
@@ -203,6 +203,9 @@ class BuildAppBar extends GetView<SearchController> {
           const SizedBox(width: 5),
           Expanded(
               child: SearchBar(
+                onTap: () async {
+                  await controller.filterBooks();
+                },
             controller: controller.searchTextEditingController,
             iconSize: 26,
             contentPadding: const EdgeInsets.only(
@@ -211,12 +214,28 @@ class BuildAppBar extends GetView<SearchController> {
                 top: kDefaultPadding / 1.9),
           )),
           const SizedBox(width: 5),
-          IconButton(
-              onPressed: () {
-                Get.toNamed(AppRoutes.DASHBORD);
-              },
-              icon: const Icon(CupertinoIcons.person_fill,
-                  size: 26, color: kWhiteColor)),
+          GestureDetector(
+            onTap: () {
+              Get.offNamed(AppRoutes.DASHBORD);
+            },
+            child: controller.avatar == ""
+                ? const Icon(CupertinoIcons.person_fill,
+                    color: kDarkColor90, size: 26)
+                : Container(
+                    height: 35,
+                    width: 35,
+                    clipBehavior: Clip.antiAlias,
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                    ),
+                    child: Image.network(controller.avatar, fit: BoxFit.fill))),
+            
+          // IconButton(
+          //     onPressed: () {
+          //       Get.toNamed(AppRoutes.DASHBORD);
+          //     },
+          //     icon: const Icon(CupertinoIcons.person_fill,
+          //         size: 26, color: kWhiteColor)),
         ]),
       );
     });

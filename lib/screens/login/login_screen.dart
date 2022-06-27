@@ -82,7 +82,9 @@ class LoginScreen extends GetView<LoginScreenController> {
                                 child: CircularProgressIndicator(color: kOrangeColor,),
                               ),
                             ) :
-                              CustomButton(onTap: () async { await controller.login();},),
+                              CustomButton(
+                                title: "Se connecter",
+                                onTap: () async { await controller.login(context);},),
                               const SizedBox(height: kDefaultPadding),
                               Row(
                                 children: [

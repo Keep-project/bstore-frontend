@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print
+// ignore_for_file: avoid_print, sort_child_properties_last
 
 import 'package:bstore/components/book_item.dart';
 import 'package:bstore/components/head_title.dart';
@@ -22,6 +22,13 @@ class ProfilScreen extends GetView<ProfilScreenController> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        // floatingActionButton: FloatingActionButton(
+        //   onPressed: (){
+        //     Get.toNamed(AppRoutes.BOOKFORM);
+        //   },
+        //   child: const Icon(Icons.add, size: 36, color: kWhiteColor),
+        //   backgroundColor: kDarkColor86,
+        // ),
         body: GetBuilder<ProfilScreenController>(
           builder: (_) {
             return Stack(
@@ -267,10 +274,78 @@ class ProfilScreen extends GetView<ProfilScreenController> {
                               ],
                             ),
                           ),
+                          const SizedBox(height: kDefaultPadding*3.2)
                         ],
                       ),
                     ),
                   ),
+                ),
+
+                Positioned(
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  child: Container(
+                      height: 50,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: kWhiteColor,
+                        boxShadow: [
+                          BoxShadow(
+                            offset: const Offset(0, 10),
+                            blurRadius: 20,
+                            color: kDarkColor90.withOpacity(0.2),
+                          ),
+                        ],
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          GestureDetector(
+                            onTap: (){Get.offAndToNamed(AppRoutes.HOME);},
+                            child: Icon(Icons.home_outlined, size: 26, color: Colors.black.withOpacity(0.6)),
+                          ),
+                          GestureDetector(
+                            onTap: (){Get.offAndToNamed(AppRoutes.BOOKFORM);},
+                            child: Container(
+                              height: 40,
+                              width: 40,
+                              decoration:  BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: kDarkColor90,
+                                boxShadow: [
+                                  BoxShadow(
+                                    offset: const Offset(0, 10),
+                                    blurRadius: 30,
+                                    color: kDarkColor90.withOpacity(.6),
+                                  ),
+                                ],
+                              ),
+                              child: const Center(
+                                child: Icon(Icons.add, size: 30, color: kWhiteColor),
+                              ),
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: (){Get.toNamed(AppRoutes.DASHBORD);},
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                              Icon( CupertinoIcons.person, size: 26, color: kOrangeColor.withOpacity(.6)),
+                              const Text("Profil",
+                                      style: TextStyle(
+                                        color: kOrangeColor,
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 10,
+                                      ),
+                                    ),
+                            ],),
+                            
+                           
+                          ),
+                        ],
+                      ),
+                    ),
                 ),
               ],
             );
