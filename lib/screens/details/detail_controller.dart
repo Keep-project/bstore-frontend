@@ -236,7 +236,7 @@ class DetailScreenController extends GetxController {
               break;
             }
           }
-          newPath = "$newPath/Downloads";
+          newPath = "$newPath/Download";
           directory = Directory(newPath);
 
           if ( !await directory.exists() ) {
