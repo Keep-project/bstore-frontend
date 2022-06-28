@@ -17,6 +17,8 @@ final TextEditingController textEditingEmail = TextEditingController();
 final TextEditingController textEditingPassword = TextEditingController();
 LoadingStatus registerStatus = LoadingStatus.initial;
 
+bool obscureText = true;
+
   @override
   void dispose() {
     textEditingNom.dispose();

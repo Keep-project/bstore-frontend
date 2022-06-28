@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_print
 
 import 'package:bstore/components/custom_button.dart';
+import 'package:bstore/components/custom_pass_field.dart';
 import 'package:bstore/components/custom_text_field.dart';
 import 'package:bstore/core/app_colors.dart';
 import 'package:bstore/core/app_size.dart';
@@ -68,7 +69,12 @@ class RegisterScreen extends GetView<RegisterScreenController> {
                                 helpText: "Email",
                               ),
                               const SizedBox(height: kDefaultPadding*0.6),
-                              CustomTextField(
+                              CustomPassField(
+                                obscureText: controller.obscureText,
+                                onTap: () {
+                                  controller.obscureText = !controller.obscureText;
+                                  controller.update();
+                                },
                                 controller: controller.textEditingPassword,
                                 hintText: "Entrez votre mot de passe",
                                 helpText: "Mot de passe",

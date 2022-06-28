@@ -44,7 +44,10 @@ class SearchBar extends StatelessWidget {
                 });
                 return;
               }
-              onTap!();
+              else if (controller.text.trim().isNotEmpty && controller.text.trim() != "Le champ ne peut être vide" ) {
+                onTap!();
+              }
+              
             },
             child: Icon(CupertinoIcons.search, size: iconSize ?? 36, color: kOrangeColor)),
           hintText: "Rechercher un livre ...",

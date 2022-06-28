@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_print
 
 import 'package:bstore/components/custom_button.dart';
+import 'package:bstore/components/custom_pass_field.dart';
 import 'package:bstore/components/custom_text_field.dart';
 import 'package:bstore/core/app_colors.dart';
 import 'package:bstore/core/app_size.dart';
@@ -66,11 +67,15 @@ class LoginScreen extends GetView<LoginScreenController> {
                                 helpText: "Nom",
                               ),
                               const SizedBox(height: kDefaultPadding),
-                              CustomTextField(
+                              CustomPassField(
+                                obscureText: controller.obscureText,
+                                onTap: () {
+                                  controller.obscureText = !controller.obscureText;
+                                  controller.update();
+                                },
                                 controller: controller.textEditingPassword,
                                 hintText: "Entrez votre mot de passe",
                                 helpText: "Mot de passe",
-                                iconData: CupertinoIcons.eye_fill,
                               ),
                              const SizedBox(height: kDefaultPadding*3),
                             controller.loginStatus == LoadingStatus.searching ?

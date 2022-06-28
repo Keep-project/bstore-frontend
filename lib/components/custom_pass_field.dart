@@ -1,20 +1,26 @@
 
 import 'package:bstore/core/app_colors.dart';
 import 'package:bstore/core/app_size.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class CustomTextField extends StatelessWidget {
+class CustomPassField extends StatelessWidget {
   final String? hintText;
   final String? helpText;
+  final IconData? iconData;
   final TextEditingController? controller;
   final int? maxLines;
   final int? minLines;
   final TextInputType? textInputType;
-  const CustomTextField({
+  final bool? obscureText;
+  final Function()? onTap;
+  const CustomPassField({
     Key? key,
     this.hintText,
-    this.helpText, this.controller, this.maxLines, this.minLines,
+    this.helpText, this.controller, this.iconData, this.maxLines, this.minLines,
     this.textInputType,
+    this.obscureText,
+    this.onTap
   }) : super(key: key);
 
   @override
@@ -52,13 +58,19 @@ class CustomTextField extends StatelessWidget {
               fontSize: 16,
               color: kDarkColor90,
             ),
+            obscureText: obscureText!,
             decoration: InputDecoration(
               enabledBorder: InputBorder.none,
               disabledBorder: InputBorder.none,
               focusedBorder: InputBorder.none,
               isDense: true,
+              icon: GestureDetector(
+                onTap: onTap,
+                child: Container(
+                  padding: const EdgeInsets.only(left: 10),
+                  child: obscureText! ? const Icon(CupertinoIcons.eye_fill, color: kOrangeColor): const Icon(CupertinoIcons.eye_slash_fill, color: kOrangeColor)),
+              ),
               contentPadding: const EdgeInsets.only(
-                  left: kDefaultPadding / 2,
                   top: kDefaultPadding / 4,
                   right: kDefaultPadding / 2,
                   bottom: kDefaultPadding / 4),

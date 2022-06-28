@@ -29,6 +29,9 @@ class LoginScreenController extends GetxController {
   final TextEditingController textEditingNom = TextEditingController();
   final TextEditingController textEditingPassword = TextEditingController();
 
+
+  bool obscureText = true;
+
   @override
   void dispose() {
     textEditingNom.dispose();
