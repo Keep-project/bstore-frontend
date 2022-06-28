@@ -133,23 +133,28 @@ class DetailScreen extends GetView<DetailScreenController> {
                                                 : CupertinoIcons.heart,
                                             value: controller.livre.likes!
                                                 .toString()),
-                                              const  SizedBox(width: kDefaultPadding/2),
-                                        GestureDetector(
-                                          onTap: () {
-                                            Get.offAndToNamed(AppRoutes.BOOKFORM, arguments: controller.livre);
-                                          },
-                                          child: Container(
-                                            height: 30,
-                                            width: 30,
-                                            decoration: BoxDecoration(
-                                              color: Colors.grey.withOpacity(.2),
-                                              shape: BoxShape.circle,
+                                             
+                                        controller.userId == controller.livre.proprietaire! ? Row(
+                                          children: [
+                                             const  SizedBox(width: kDefaultPadding/2),
+                                            GestureDetector(
+                                              onTap: () {
+                                                Get.offAndToNamed(AppRoutes.BOOKFORM, arguments: controller.livre);
+                                              },
+                                              child: Container(
+                                                height: 30,
+                                                width: 30,
+                                                decoration: BoxDecoration(
+                                                  color: Colors.grey.withOpacity(.2),
+                                                  shape: BoxShape.circle,
+                                                ),
+                                                child: const Center(
+                                                  child: Icon(Icons.edit, size: 20, color: kDarkColor90),
+                                                ),
+                                              ),
                                             ),
-                                            child: const Center(
-                                              child: Icon(Icons.edit, size: 20, color: kDarkColor90),
-                                            ),
-                                          ),
-                                        ),
+                                          ],
+                                        ) :  Container(),
                                         
                                       ],
                                     ),
@@ -319,7 +324,7 @@ class DetailScreen extends GetView<DetailScreenController> {
                                             color: !controller.showComments
                                                 ? Colors.black
                                                 : Colors.black.withOpacity(0.5),
-                                            fontSize: 16,
+                                            fontSize: 12,
                                             fontWeight: FontWeight.w600,
                                           ),
                                         ),
@@ -330,7 +335,7 @@ class DetailScreen extends GetView<DetailScreenController> {
                                           "4.2",
                                           style: TextStyle(
                                             color: kDarkColor90.withOpacity(0.8),
-                                            fontSize: 16,
+                                            fontSize: 12,
                                           ),
                                         ),
                                         const SizedBox(
@@ -341,7 +346,7 @@ class DetailScreen extends GetView<DetailScreenController> {
                                             (index) => const Icon(
                                                 CupertinoIcons.star_fill,
                                                 color: kOrangeColor,
-                                                size: 14)),
+                                                size: 11)),
                                           ],
                                         ),
                                     ),
@@ -360,7 +365,7 @@ class DetailScreen extends GetView<DetailScreenController> {
                                             color: controller.showComments
                                                 ? Colors.black
                                                 : Colors.black.withOpacity(0.5),
-                                            fontSize: 16,
+                                            fontSize: 12,
                                             fontWeight: FontWeight.w600,
                                           ),
                                         ),

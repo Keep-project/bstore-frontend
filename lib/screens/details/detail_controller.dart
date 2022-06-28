@@ -35,6 +35,7 @@ class DetailScreenController extends GetxController {
   bool showComments = false;
   List<Text> comments = <Text>[];
   String avatar = "";
+  int userId = 0;
   bool is_like = false;
 
   String? progress;
@@ -75,8 +76,9 @@ class DetailScreenController extends GetxController {
     Map<String, dynamic> userJson = await UserInfo.user();
     if (userJson['avatar'] != "") {
       avatar = userJson['avatar'];
-      update();
     }
+    userId = userJson['id'];
+    update();
   }
 
   Future likeBook(int? index) async {

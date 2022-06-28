@@ -65,7 +65,7 @@ class CustomTextField extends StatelessWidget {
                   bottom: kDefaultPadding / 4),
               hintText: '$hintText',
               hintStyle: TextStyle(
-                fontSize: 16,
+                fontSize: 12,
                 color: kDarkColor90.withOpacity(0.4),
               ),
             ),
