@@ -1,8 +1,9 @@
-// ignore_for_file: avoid_print
+// ignore_for_file: avoid_print, use_build_context_synchronously
 
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:bstore/core/app_snackbar.dart';
 import 'package:bstore/core/app_state.dart';
 import 'package:bstore/models/response_data_model.dart/livre_model.dart';
 import 'package:bstore/models/response_data_model.dart/user_data.dart';
@@ -12,18 +13,20 @@ import 'package:bstore/services/remote_service/livre/livre_service.dart';
 import 'package:bstore/services/remote_service/livre/livre_service_impl.dart';
 import 'package:bstore/services/remote_service/user/user_service.dart';
 import 'package:bstore/services/remote_service/user/user_service_impl.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
 import 'package:dio/dio.dart' as client;
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart' as p;
+import 'package:permission_handler/permission_handler.dart';
 
 class ProfilScreenController extends GetxController {
   LoadingStatus recentBookStatus = LoadingStatus.initial;
   LoadingStatus userStatus = LoadingStatus.initial;
   LoadingStatus downloadStatus = LoadingStatus.initial;
-  LocalAuthenticationServices _localAuth = LocalAuthenticationServicesImpl();
+  final LocalAuthenticationServices _localAuth = LocalAuthenticationServicesImpl();
 
   final LivreService _serviceLivre = LivreServiceImpl();
   final UserService _userService = UserServiceImpl();
@@ -94,32 +97,84 @@ class ProfilScreenController extends GetxController {
     );
   }
 
-  Future<List<Directory>?> _getExternalstoragePath() {
-    return p.getExternalStorageDirectories(type: p.StorageDirectory.downloads);
-  }
-
-  Future downloadAndSaveFileToStorage(Livre livre) async {
+  Future downloadAndSaveFileToStorage(BuildContext context, Livre livre) async {
     selectedToDownload = livre;
     downloadStatus = LoadingStatus.searching;
     update();
     try {
-      final dirList = await _getExternalstoragePath();
-      final path = dirList![0].path;
-      final file = File(
-          "$path/${livre.titre!.toString().capitalizeFirst}.${livre.extension}");
-      await dio!.download(livre.fichier.toString(), file.path,
-          onReceiveProgress: (rec, total) {
-        progress = "${((rec / total) * 100).toStringAsFixed(0)} %";
-        // print("Progress : $progress");
-      });
+      await saveFile(livre.fichier!, "${livre.titre!.toString().capitalizeFirst}.${livre.extension}");
       await downloadBook();
-      // print(file.path);
+      CustomSnacbar.showMessage(context, "Document Téléchargé avec succès! ${livre.titre!.toString().capitalizeFirst}.${livre.extension} est desormais disponible dans le dossier de téléchargement de votre téléphone");
     } catch (e) {
       print(e);
       downloadStatus = LoadingStatus.failed;
     }
     update();
   }
+  
+  Future<bool> saveFile(String url, String filename) async {
+    Directory? directory; 
+    try {
+      if (Platform.isAndroid) {
+        if ( await _requestPermission(Permission.storage)) {
+          directory = await p.getExternalStorageDirectory();
+          String newPath = "";
+
+          List<String> folders = directory!.path.split("/");
+
+          for (int x = 1; x < folders.length; x++) {
+            String folder = folders[x];
+            if (folder != "Android") {
+              newPath += "/$folder";
+            }
+            else {
+              break;
+            }
+          }
+          newPath = "$newPath/Download";
+          directory = Directory(newPath);
+
+          if ( !await directory.exists() ) {
+            await directory.create( recursive: true );
+          }
+          if ( await directory.exists() ) {
+            File file = File("${directory.path}/$filename");
+            await dio!.download(url, file.path,
+              onReceiveProgress: (rec, total) {
+                progress = "${((rec / total) * 100).toStringAsFixed(0)} %";
+              });
+          }
+          return true;
+        }
+        else {
+          return false;
+        }
+
+      }
+      return false;
+    }
+    catch (e) {
+      print(e);
+      return false;
+    }
+    
+  }
+
+  Future<bool> _requestPermission(Permission permission) async {
+    if (await permission.isGranted) {
+      return true;
+    }
+    else {
+      var result = await permission.request();
+      if (result == PermissionStatus.granted) {
+        return true;
+      }
+      else {
+        return false;
+      }
+    }
+  }
+
 
   Future downloadBook() async {
     await _serviceLivre.downloadBook(

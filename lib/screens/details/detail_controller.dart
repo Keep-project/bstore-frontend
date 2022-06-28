@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print
+// ignore_for_file: avoid_print, use_build_context_synchronously
 
 import 'dart:io';
 
@@ -153,11 +153,12 @@ class DetailScreenController extends GetxController {
         });
   }
 
-  Future downloadAndSaveFileToStorage() async {
+  Future downloadAndSaveFileToStorage(BuildContext context) async {
     loadingStatus = LoadingStatus.searching;
     try {
       await saveFile(livre.fichier!, "${livre.titre!.toString().capitalizeFirst}.${livre.extension}");
       await downloadBook();
+      CustomSnacbar.showMessage(context, "Document Téléchargé avec succès! ${livre.titre!.toString().capitalizeFirst}.${livre.extension} est desormais disponible dans le dossier de téléchargement de votre téléphone");
     } catch (e) {
       print(e);
       loadingStatus = LoadingStatus.failed;

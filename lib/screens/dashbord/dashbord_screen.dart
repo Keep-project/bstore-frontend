@@ -106,7 +106,7 @@ class ProfilScreen extends GetView<ProfilScreenController> {
                                       right: kDefaultMargin *2.5,
                                       child: GestureDetector(
                                         onTap: () async {
-                                          await controller.downloadAndSaveFileToStorage(controller.likedBooks[index]);
+                                          await controller.downloadAndSaveFileToStorage(context, controller.likedBooks[index]);
                                         },
                                         child: controller.downloadStatus == LoadingStatus.searching && controller.likedBooks[index].id! == controller.selectedToDownload!.id! ?
                                         Container(
@@ -188,7 +188,7 @@ class ProfilScreen extends GetView<ProfilScreenController> {
                                         )
                                       : GestureDetector(
                                         onTap: () async {
-                                          await controller.downloadAndSaveFileToStorage(controller.uploadsBooks[index]);
+                                          await controller.downloadAndSaveFileToStorage(context, controller.uploadsBooks[index]);
                                         },
                                         child: Container(
                                           height: 35,
@@ -242,7 +242,7 @@ class ProfilScreen extends GetView<ProfilScreenController> {
                                       right: kDefaultMargin *1.92,
                                       child: GestureDetector(
                                          onTap: () async {
-                                          await controller.downloadAndSaveFileToStorage(controller.downloadsBooks[index]);
+                                          await controller.downloadAndSaveFileToStorage(context, controller.downloadsBooks[index]);
                                         },
                                         child:  controller.downloadStatus == LoadingStatus.searching && controller.downloadsBooks[index].id! == controller.selectedToDownload!.id! ?
                                         Container(

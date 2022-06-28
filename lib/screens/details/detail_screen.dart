@@ -260,7 +260,7 @@ class DetailScreen extends GetView<DetailScreenController> {
                                   GestureDetector(
                                     onTap: () async {
                                       await controller
-                                          .downloadAndSaveFileToStorage();
+                                          .downloadAndSaveFileToStorage(context);
                                     },
                                     child: Container(
                                       height: 45,
