@@ -17,41 +17,45 @@ import 'package:share_plus/share_plus.dart';
 
 class DetailScreen extends GetView<DetailScreenController> {
   const DetailScreen({Key? key}) : super(key: key);
-  
+
   @override
   Widget build(BuildContext context) {
     return GetBuilder<DetailScreenController>(builder: (controller) {
+      double height = 400;
       return SafeArea(
         child: Scaffold(
-          extendBodyBehindAppBar: true,
-          appBar: buildAppBar(controller),
-          body: SingleChildScrollView(
-            child: controller.loadingStatus == LoadingStatus.searching
-                ? Container(
-                    height: Get.height,
-                    width: Get.width,
-                    padding: const EdgeInsets.all(20),
-                    child: const Center(
-                        child: CircularProgressIndicator(
-                      color: Colors.red,
-                    )),
-                  )
-                : Column(
+          body:
+          controller.loadingStatus == LoadingStatus.searching ? Container(
+            height: Get.height,
+            width: Get.width,
+            decoration: const BoxDecoration(),
+            child: const Center(
+              child: CircularProgressIndicator(color: kOrangeColor)
+            ),
+          )  :
+          SingleChildScrollView(
+            child: Column(
+              children: [
+              Stack(
+                children: [
+                  Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Container(
-                        height: Get.height * 0.63,
+                        height: height,
                         width: double.infinity,
                         clipBehavior: Clip.antiAlias,
-                        decoration: const BoxDecoration(
-                          color: Colors.white,
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(.3),
                         ),
                         child: Column(
                           children: [
                             Stack(
+                              clipBehavior: Clip.none,
+                              alignment: Alignment.topCenter,
                               children: [
                                 Container(
-                                  height: Get.height * 0.63,
+                                  height: height - 30,
                                   width: double.infinity,
                                   clipBehavior: Clip.antiAlias,
                                   decoration: const BoxDecoration(
@@ -61,36 +65,110 @@ class DetailScreen extends GetView<DetailScreenController> {
                                 Opacity(
                                   opacity: 0.0915,
                                   child: Container(
-                                    height: Get.height * 0.63 - 30,
+                                    height: height - 30,
                                     width: double.infinity,
                                     clipBehavior: Clip.antiAlias,
                                     decoration: BoxDecoration(
-                                      color: Colors.black,
+                                      color: Colors.white,
                                       image: DecorationImage(
                                         fit: BoxFit.fill,
                                         image: NetworkImage(
-                                            controller.livre.image!),
+                                            controller.livre.image! ),
                                       ),
                                     ),
                                   ),
-                                ),
+                                ),                       
                                 Positioned(
                                   top: 60,
-                                  right: Get.height * 0.185,
-                                  left: Get.height * 0.185,
-                                  child: Container(
-                                    height: 220,
-                                    width: 200,
-                                    clipBehavior: Clip.antiAlias,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(8),
-                                      color: Colors.black,
-                                      image: DecorationImage(
-                                        fit: BoxFit.fill,
-                                        image: NetworkImage(
-                                            controller.livre.image!),
+                                  right: 0,
+                                  left: 0,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        constraints: const BoxConstraints(
+                                          maxHeight: 220,
+                                          minHeight: 220,
+                                          maxWidth: 180,
+                                          minWidth: 180,
+                                        ),
+                                        clipBehavior: Clip.antiAlias,
+                                        decoration: BoxDecoration(
+                                         
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                          color: Colors.grey.withOpacity(.3),
+                                          image: DecorationImage(
+                                            fit: BoxFit.fill,
+                                            image: NetworkImage(
+                                                controller.livre.image!),
+                                          ),
+                                        ),
                                       ),
-                                    ),
+                                    ],
+                                  ),
+                                ),
+                                Positioned(
+                                  right: kDefaultPadding ,
+                                  bottom: kDefaultPadding * 10,
+                                  child: Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.end,
+                                    children: [
+                                      CustomIconData(
+                                          onTap: () async {
+                                            await controller.likeBook(-1);
+                                          },
+                                          color: kOrangeColor,
+                                          size: 26,
+                                          iconData: controller.is_like
+                                              ? CupertinoIcons.heart_fill
+                                              : CupertinoIcons.heart,
+                                          value: controller.livre.likes!
+                                              .toString()),
+                                      const SizedBox(
+                                          height: kDefaultPadding / 2),
+                                      controller.userId ==
+                                              controller.livre.proprietaire!
+                                          ? Row(
+                                              children: [
+                                                const SizedBox(
+                                                    width:
+                                                        kDefaultPadding / 2),
+                                                GestureDetector(
+                                                  onTap: () {
+                                                    Get.offAndToNamed(
+                                                        AppRoutes.BOOKFORM,
+                                                        arguments:
+                                                            controller.livre);
+                                                  },
+                                                  child: Container(
+                                                    height: 30,
+                                                    width: 30,
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.white
+                                                          .withOpacity(.8),
+                                                      shape: BoxShape.circle,
+                                                      boxShadow: [
+                                                        BoxShadow(
+                                                          offset: const Offset(0, 10),
+                                                          blurRadius: 40,
+                                                          color: kDarkColor86.withOpacity(0.6)
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    child: const Center(
+                                                      child: Icon(Icons.edit,
+                                                          size: 20,
+                                                          color:
+                                                              kDarkColor90),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            )
+                                          : Container(),
+                                    ],
                                   ),
                                 ),
                                 Positioned(
@@ -111,57 +189,20 @@ class DetailScreen extends GetView<DetailScreenController> {
                                     Opacity(
                                       opacity: 0.6,
                                       child: Text(
-                                        controller.livre.auteur!.toString().capitalizeFirst!,
+                                        controller.livre.auteur!
+                                            .toString()
+                                            .capitalizeFirst!,
                                         textAlign: TextAlign.center,
                                         style: const TextStyle(
                                           fontSize: 14,
                                         ),
                                       ),
                                     ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        CustomIconData(
-                                            onTap: () async {
-                                              await controller.likeBook(-1);
-                                            },
-                                            color: kOrangeColor,
-                                            size: 26,
-                                            iconData: controller.is_like
-                                                ? CupertinoIcons.heart_fill
-                                                : CupertinoIcons.heart,
-                                            value: controller.livre.likes!
-                                                .toString()),
-                                             
-                                        controller.userId == controller.livre.proprietaire! ? Row(
-                                          children: [
-                                             const  SizedBox(width: kDefaultPadding/2),
-                                            GestureDetector(
-                                              onTap: () {
-                                                Get.offAndToNamed(AppRoutes.BOOKFORM, arguments: controller.livre);
-                                              },
-                                              child: Container(
-                                                height: 30,
-                                                width: 30,
-                                                decoration: BoxDecoration(
-                                                  color: Colors.grey.withOpacity(.2),
-                                                  shape: BoxShape.circle,
-                                                ),
-                                                child: const Center(
-                                                  child: Icon(Icons.edit, size: 20, color: kDarkColor90),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ) :  Container(),
-                                        
-                                      ],
-                                    ),
+                                    const SizedBox(height: 5),
                                   ]),
                                 ),
                                 Positioned(
-                                  bottom: 0,
+                                  bottom: -30,
                                   left: 0,
                                   right: 0,
                                   child: Container(
@@ -170,7 +211,7 @@ class DetailScreen extends GetView<DetailScreenController> {
                                         right: kDefaultMargin * 3),
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: kDefaultPadding,
-                                        vertical: kDefaultPadding / 2),
+                                        vertical: kDefaultPadding / 3 ),
                                     decoration: BoxDecoration(
                                       color: kOrangeColor.withOpacity(0.6),
                                       borderRadius: BorderRadius.circular(8),
@@ -260,7 +301,8 @@ class DetailScreen extends GetView<DetailScreenController> {
                                   GestureDetector(
                                     onTap: () async {
                                       await controller
-                                          .downloadAndSaveFileToStorage(context);
+                                          .downloadAndSaveFileToStorage(
+                                              context);
                                     },
                                     child: Container(
                                       height: 45,
@@ -288,13 +330,15 @@ class DetailScreen extends GetView<DetailScreenController> {
                                             controller.downloadStatus ==
                                                     LoadingStatus.searching
                                                 ? Container(
-                                                  height: 25,
-                                                  width: 25,
-                                                  decoration: const BoxDecoration(),
-                                                  child: const CircularProgressIndicator(
-                                                      color: kWhiteColor,
-                                                      strokeWidth: 2),
-                                                )
+                                                    height: 25,
+                                                    width: 25,
+                                                    decoration:
+                                                        const BoxDecoration(),
+                                                    child:
+                                                        const CircularProgressIndicator(
+                                                            color: kWhiteColor,
+                                                            strokeWidth: 2),
+                                                  )
                                                 : const Icon(
                                                     CupertinoIcons
                                                         .cloud_download_fill,
@@ -312,45 +356,46 @@ class DetailScreen extends GetView<DetailScreenController> {
                                   Row(children: <Widget>[
                                     GestureDetector(
                                       onTap: () {
-                                         controller.showComments =
+                                        controller.showComments =
                                             !controller.showComments;
                                         controller.update();
                                       },
                                       child: Row(
                                         children: [
                                           Text(
-                                          "Avis",
-                                          style: TextStyle(
-                                            color: !controller.showComments
-                                                ? Colors.black
-                                                : Colors.black.withOpacity(0.5),
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w600,
+                                            "Avis",
+                                            style: TextStyle(
+                                              color: !controller.showComments
+                                                  ? Colors.black
+                                                  : Colors.black
+                                                      .withOpacity(0.5),
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w600,
+                                            ),
                                           ),
-                                        ),
-                                        const SizedBox(
-                                          width: 8,
-                                        ),
-                                        Text(
-                                          "4.2",
-                                          style: TextStyle(
-                                            color: kDarkColor90.withOpacity(0.8),
-                                            fontSize: 12,
+                                          const SizedBox(
+                                            width: 8,
                                           ),
-                                        ),
-                                        const SizedBox(
-                                          width: 3,
-                                        ),
-                                        ...List.generate(
-                                            4,
-                                            (index) => const Icon(
-                                                CupertinoIcons.star_fill,
-                                                color: kOrangeColor,
-                                                size: 11)),
-                                          ],
-                                        ),
+                                          Text(
+                                            "4.2",
+                                            style: TextStyle(
+                                              color:
+                                                  kDarkColor90.withOpacity(0.8),
+                                              fontSize: 12,
+                                            ),
+                                          ),
+                                          const SizedBox(
+                                            width: 3,
+                                          ),
+                                          ...List.generate(
+                                              4,
+                                              (index) => const Icon(
+                                                  CupertinoIcons.star_fill,
+                                                  color: kOrangeColor,
+                                                  size: 11)),
+                                        ],
+                                      ),
                                     ),
-                                    
                                     TextButton(
                                       onPressed: () {
                                         controller.showComments =
@@ -372,7 +417,8 @@ class DetailScreen extends GetView<DetailScreenController> {
                                       ),
                                     ),
                                   ]),
-                                  controller.comments.isNotEmpty && !controller.showComments
+                                  controller.comments.isNotEmpty &&
+                                          !controller.showComments
                                       ? Row(children: <Widget>[
                                           IconButton(
                                               onPressed: () {
@@ -409,7 +455,8 @@ class DetailScreen extends GetView<DetailScreenController> {
                                         ])
                                       : Container(),
                                 ]),
-                            controller.comments.isNotEmpty && !controller.showComments
+                            controller.comments.isNotEmpty &&
+                                    !controller.showComments
                                 ? Align(
                                     alignment: Alignment.centerLeft,
                                     child: ConstrainedBox(
@@ -434,54 +481,59 @@ class DetailScreen extends GetView<DetailScreenController> {
                                     ),
                                   )
                                 : Container(
-                                  decoration: const BoxDecoration(),
-                                  child: Column(
-                                    children: [
-                                      CustomTextField(
-                                        hintText: "Tapez votre commentaire ici...",
-                                        helpText: "",
-                                        controller: controller.commentTextController,
-                                        maxLines: 10,
-                                        minLines: 5
-                                      ),
-                                      const SizedBox(
-                                        height: kDefaultPadding /2
-                                      ),
-                                      Row(
-                                        children: [
-                                          const Spacer(),
-                                          GestureDetector(
-                                            onTap: () async {
-                                              controller.sendComment(context);
-                                            },
-                                            child: Container(
-                                              width: 100,
-                                              padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding/2),
-                                              decoration: BoxDecoration(
-                                                color: kGreenColor,
-                                                borderRadius: BorderRadius.circular(kDefaultRadius/2)
-                                              ),
-                                              child: const Center(
-                                                child: Text("Envoyer",
-                                                 style: TextStyle(
-                                                  color: kWhiteColor,
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.w600, 
-                                                 )
-                                                ),
-                                              ) 
+                                    decoration: const BoxDecoration(),
+                                    child: Column(
+                                      children: [
+                                        CustomTextField(
+                                            hintText:
+                                                "Tapez votre commentaire ici...",
+                                            helpText: "",
+                                            controller: controller
+                                                .commentTextController,
+                                            maxLines: 10,
+                                            minLines: 5),
+                                        const SizedBox(
+                                            height: kDefaultPadding / 2),
+                                        Row(
+                                          children: [
+                                            const Spacer(),
+                                            GestureDetector(
+                                              onTap: () async {
+                                                controller.sendComment(context);
+                                              },
+                                              child: Container(
+                                                  width: 100,
+                                                  padding: const EdgeInsets
+                                                          .symmetric(
+                                                      horizontal:
+                                                          kDefaultPadding,
+                                                      vertical:
+                                                          kDefaultPadding / 2),
+                                                  decoration: BoxDecoration(
+                                                      color: kGreenColor,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              kDefaultRadius /
+                                                                  2)),
+                                                  child: const Center(
+                                                    child: Text("Envoyer",
+                                                        style: TextStyle(
+                                                          color: kWhiteColor,
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                        )),
+                                                  )),
                                             ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
+                                          ],
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ),
                             const SizedBox(height: 30),
                             const HeadTitle(
                               title: "Livres similaires",
                             ),
-                            
                             const SizedBox(height: 20),
                             SingleChildScrollView(
                               scrollDirection: Axis.horizontal,
@@ -489,13 +541,18 @@ class DetailScreen extends GetView<DetailScreenController> {
                                 children: <Widget>[
                                   ...List.generate(
                                     controller.livresimilaires.length,
-                                    (index) => 
-                                    BookItem(
-                                      onTap: ()async{ await controller.likeBook(index);},
+                                    (index) => BookItem(
+                                      onTap: () async {
+                                        await controller.likeBook(index);
+                                      },
                                       controller: controller,
                                       livre: controller.livresimilaires[index],
                                       onPress: () async {
-                                        Get.offAndToNamed(AppRoutes.DETAILS, arguments: controller.livresimilaires[index].id, );
+                                        Get.offAndToNamed(
+                                          AppRoutes.DETAILS,
+                                          arguments: controller
+                                              .livresimilaires[index].id,
+                                        );
                                         controller.onInit();
                                       },
                                     ),
@@ -509,6 +566,10 @@ class DetailScreen extends GetView<DetailScreenController> {
                       )
                     ],
                   ),
+                  buildAppBar(controller),
+                ],
+              )
+            ]),
           ),
         ),
       );
@@ -528,7 +589,7 @@ class DetailScreen extends GetView<DetailScreenController> {
       ),
       actions: [
         Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(0),
           child: GestureDetector(
               onTap: () async {
                 await Share.share(

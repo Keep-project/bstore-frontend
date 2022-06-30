@@ -100,7 +100,7 @@ class DetailScreenController extends GetxController {
         });
   }
 
-  Future downloadBook() async {
+  Future downloadBook(BuildContext context) async {
     downloadStatus = LoadingStatus.searching;
     update();
     await _serviceLivre.downloadBook(
@@ -109,6 +109,7 @@ class DetailScreenController extends GetxController {
         livre.telecharges = livre.telecharges! + 1;
         downloadStatus = LoadingStatus.completed;
         Future.delayed(const Duration(seconds: 1), (){
+          CustomSnacbar.showMessage(context, "Document Téléchargé avec succès! ${livre.titre!.toString().capitalizeFirst}.${livre.extension} est desormais disponible dans le dossier de téléchargement de votre téléphone");
           update();
         });
       },
@@ -157,8 +158,7 @@ class DetailScreenController extends GetxController {
     loadingStatus = LoadingStatus.searching;
     try {
       await saveFile(livre.fichier!, "${livre.titre!.toString().capitalizeFirst}.${livre.extension}");
-      await downloadBook();
-      CustomSnacbar.showMessage(context, "Document Téléchargé avec succès! ${livre.titre!.toString().capitalizeFirst}.${livre.extension} est desormais disponible dans le dossier de téléchargement de votre téléphone");
+      await downloadBook(context);
     } catch (e) {
       print(e);
       loadingStatus = LoadingStatus.failed;

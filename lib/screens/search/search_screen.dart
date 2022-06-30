@@ -112,18 +112,15 @@ class SearchScreen extends GetView<SearchController> {
                               decoration: const BoxDecoration(
                                 color: Colors.transparent,
                               ),
-                              child: GridView.count(
-                                controller: controller.scrollController,
-                                crossAxisCount: 2,
-                                mainAxisSpacing: kDefaultPadding,
-                                crossAxisSpacing: 20,
-                                shrinkWrap: true,
-                                childAspectRatio: 0.69,
-                                children: <Widget>[
+                              child: Wrap(
+                                  spacing: kDefaultPadding + 6,
+                                  runSpacing: 20,
+                                  crossAxisAlignment: WrapCrossAlignment.center,
+                                  children: <Widget>[
                                   ...List.generate(
                                       controller.listLivre.length,
                                       (index) => BookItem(
-                                          width: 300,
+                                          width: (Get.width - 70) / 2,
                                           marginRight: 2,
                                           onTap: () async {
                                             await controller.likeBook(index);
@@ -144,6 +141,7 @@ class SearchScreen extends GetView<SearchController> {
                                     ): Container(),
                                 ],
                               ),
+                              
                             ),
                     ),
               (controller.listLivre.isEmpty 
