@@ -4,7 +4,6 @@
 import 'dart:io';
 import 'package:bstore/core/app_snackbar.dart';
 import 'package:bstore/core/app_state.dart';
-import 'package:bstore/models/response_data_model.dart/category_model.dart';
 import 'package:bstore/models/response_data_model.dart/livre_model.dart';
 import 'package:bstore/router/app_router.dart';
 import 'package:bstore/screens/book_form/pages/page_one.dart';
@@ -48,7 +47,8 @@ class BookFormScreenController extends GetxController {
 
   final picker = ImagePicker();
   var imageFile;
-  String photo = "";
+  //String photo = "";
+  String document = "";
 
   PlatformFile? _file;
   // final GlobalKey<ScaffoldState> _scaffoldstate = GlobalKey<ScaffoldState>();
@@ -157,12 +157,14 @@ class BookFormScreenController extends GetxController {
     if (result != null) {
       final file = result.files.first;
       _file = file;
-      print("Name : ${file.name}");
-      print("Bytes : ${file.bytes}");
-      print("Size : ${file.size}");
-      print("Extension : ${file.extension}");
-      print("Path: ${file.path}");
-      print("Base name: ${basename(file.path!)}");
+      document = file.name;
+      // print("Name : ${file.name}");
+      // print("Bytes : ${file.bytes}");
+      // print("Size : ${file.size}");
+      // print("Extension : ${file.extension}");
+      // print("Path: ${file.path}");
+      // print("Base name: ${basename(file.path!)}");
+      update();
     }
   }
 
@@ -287,6 +289,12 @@ class BookFormScreenController extends GetxController {
     }
     pageController.nextPage(duration: const Duration(milliseconds: 300), curve: Curves.ease);
     step = 3;
+    update();
+  }
+
+  void previousPage() {
+    pageController.previousPage(duration: const Duration(milliseconds: 300), curve: Curves.ease);
+    step -= 1;
     update();
   }
 }

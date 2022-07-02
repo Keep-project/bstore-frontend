@@ -139,6 +139,8 @@ class SearchController extends GetxController {
   }
 
   Future listBooks() async {
+    infinityStatus = LoadingStatus.searching;
+    update();
     await _serviceLivre.listBooks(
         url: next,
         onSuccess: (data) {

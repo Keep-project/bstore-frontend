@@ -74,7 +74,7 @@ class SearchScreen extends GetView<SearchController> {
                   ),
                 ),
               ),
-              controller.searchStatus == LoadingStatus.searching
+              controller.searchStatus == LoadingStatus.searching  
                   ? Positioned(
                       top: 165,
                       bottom: 0,
@@ -83,6 +83,8 @@ class SearchScreen extends GetView<SearchController> {
                       child: Container(
                         padding: const EdgeInsets.all(0),
                         width: double.infinity,
+                        height: Get.height,
+                       
                         child: const Center(
                           child: CircularProgressIndicator(color: kOrangeColor),
                         ),
@@ -94,14 +96,15 @@ class SearchScreen extends GetView<SearchController> {
                       right: 0,
                       child: controller.infinityStatus ==
                               LoadingStatus.searching 
-                              && controller.idPage != 'liste' && controller.idPage != 'search'
+                              //&& controller.idPage != 'liste' 
+                              && controller.idPage != 'search'
                           ? Container(
                               padding: const EdgeInsets.all(0),
                               height: 100,
                               width: double.infinity,
                               child: const Center(
                                 child: CircularProgressIndicator(
-                                    color: kDarkColor86),
+                                    color: kOrangeColor),
                               ),
                             )
                           : Container(
@@ -112,34 +115,36 @@ class SearchScreen extends GetView<SearchController> {
                               decoration: const BoxDecoration(
                                 color: Colors.transparent,
                               ),
-                              child: Wrap(
-                                  spacing: kDefaultPadding + 6,
-                                  runSpacing: 20,
-                                  crossAxisAlignment: WrapCrossAlignment.center,
-                                  children: <Widget>[
-                                  ...List.generate(
-                                      controller.listLivre.length,
-                                      (index) => BookItem(
-                                          width: (Get.width - 70) / 2,
-                                          marginRight: 2,
-                                          onTap: () async {
-                                            await controller.likeBook(index);
-                                          },
-                                          onPress: (){
-                                            Get.toNamed(AppRoutes.DETAILS, arguments: controller.listLivre[index].id!);
-                                          },
-                                          controller: controller,
-                                          livre: controller.listLivre[index])),
-                                    controller.infinityStatus == LoadingStatus.searching ? Container(
-                                      padding: const EdgeInsets.all(0),
-                                      height: 100,
-                                      width: double.infinity,
-                                      child: const Center(
-                                        child: CircularProgressIndicator(
-                                            color: kOrangeColor),
-                                      ),
-                                    ): Container(),
-                                ],
+                              child: SingleChildScrollView(
+                                child: Wrap(
+                                    spacing: kDefaultPadding + 6,
+                                    runSpacing: 20,
+                                    crossAxisAlignment: WrapCrossAlignment.center ,
+                                    children: <Widget>[
+                                    ...List.generate(
+                                        controller.listLivre.length,
+                                        (index) => BookItem(
+                                            width: (Get.width - 70) / 2,
+                                            marginRight: 2,
+                                            onTap: () async {
+                                              await controller.likeBook(index);
+                                            },
+                                            onPress: (){
+                                              Get.toNamed(AppRoutes.DETAILS, arguments: controller.listLivre[index].id!);
+                                            },
+                                            controller: controller,
+                                            livre: controller.listLivre[index])),
+                                      controller.infinityStatus == LoadingStatus.searching ? Container(
+                                        padding: const EdgeInsets.all(0),
+                                        height: 100,
+                                        width: double.infinity,
+                                        child: const Center(
+                                          child: CircularProgressIndicator(
+                                              color: kOrangeColor),
+                                        ),
+                                      ): Container(),
+                                  ],
+                                ),
                               ),
                               
                             ),

@@ -22,7 +22,8 @@ class BookFormScreen extends GetView<BookFormScreenController> {
           elevation: 0,
           backgroundColor: kWhiteColor,
           centerTitle: true,
-          title: Text(Get.arguments != null ? "Editer le livre" : "Ajouter un livre",
+          title: Text(
+            Get.arguments != null ? "Editer le livre" : "Ajouter un livre",
             style: const TextStyle(
               color: kDarkColor90,
               fontWeight: FontWeight.w600,
@@ -34,9 +35,10 @@ class BookFormScreen extends GetView<BookFormScreenController> {
             child: GestureDetector(
                 onTap: () {
                   if (Get.arguments != null) {
-                    Get.offAndToNamed(AppRoutes.DETAILS, arguments: controller.livre.id!);
+                    Get.offAndToNamed(AppRoutes.DETAILS,
+                        arguments: controller.livre.id!);
                   } else {
-                    Get.back();
+                    Get.offAndToNamed(AppRoutes.DASHBORD);
                   }
                 },
                 child: const Icon(CupertinoIcons.arrow_left,
@@ -63,13 +65,15 @@ class BookFormScreen extends GetView<BookFormScreenController> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                             
                               const Spacer(),
                               Container(
                                 height: Get.height * 0.60,
                                 width: double.infinity,
                                 decoration: const BoxDecoration(),
                                 child: PageView.builder(
+                                  physics: Get.arguments == null
+                                      ? const NeverScrollableScrollPhysics()
+                                      : const AlwaysScrollableScrollPhysics(),
                                   onPageChanged: (value) {
                                     // controller.onChangePage(value);
                                   },
@@ -79,33 +83,77 @@ class BookFormScreen extends GetView<BookFormScreenController> {
                                       controller.pages[index],
                                 ),
                               ),
-                              Get.arguments == null && controller.bookStatus != LoadingStatus.searching ? CustomButton(
-                                title: controller.step == 3 ?  "Créer le livre" : "Suivant",
-                                onTap: () async {
-                                  if (controller.step == 1){
-                                    controller.jumpToStepTwo(context);
-                                  }
-                                  if (controller.step == 2){
-                                    controller.jumpToStepThree(context);
-                                  }
-                                  if (controller.step == 3) {
-                                    await controller.saveBook(context);
-                                  }
-                                },
-                              ) : Get.arguments != null && controller.bookStatus != LoadingStatus.searching ?  CustomButton(
-                                title:"Mettre à jour",
-                                onTap: () async {
-                                  await controller.editBook(context);
-                                },
-                              ) :
-                                Container(
-                                  height: 45,
-                                  width: double.infinity,
-                                  decoration: const BoxDecoration(),
-                                  child: const Center(
-                                    child: CircularProgressIndicator(color: kOrangeColor,),
-                                  ),
-                                ),
+                              Get.arguments == null &&
+                                      controller.bookStatus !=
+                                          LoadingStatus.searching
+                                  ? Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        controller.step != 1 ? Expanded(
+                                          flex: 2,
+                                          child: InkWell(
+                                            onTap: () {
+                                              controller.previousPage();
+                                          },
+                                            child: const Padding(
+                                              padding: EdgeInsets.all(8.0),
+                                              child: Text(" Retour", textAlign: TextAlign.left,
+                                                style: TextStyle(
+                                                  color: Colors.grey,
+                                                  fontSize: 16,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ) : Container(),
+                                        Expanded(
+                                          flex: 2,
+                                          child: CustomButton(
+                                            title: controller.step == 3
+                                                ? "Créer le livre"
+                                                : "Suivant",
+                                            onTap: () async {
+                                              switch (controller.step) {
+                                                case 1:
+                                                  controller
+                                                    .jumpToStepTwo(context);
+                                                  break;
+                                                case 2:
+                                                  controller
+                                                    .jumpToStepThree(context);
+                                                  break;
+                                                case 3:
+                                                  await controller
+                                                    .saveBook(context);
+                                                  break;
+                                                default:
+                                                  break;
+                                              }
+                                            },
+                                          ),
+                                        ),
+                                        
+                                      ],
+                                    )
+                                  : Get.arguments != null &&
+                                          controller.bookStatus !=
+                                              LoadingStatus.searching
+                                      ? CustomButton(
+                                          title: "Mettre à jour",
+                                          onTap: () async {
+                                            await controller.editBook(context);
+                                          },
+                                        )
+                                      : Container(
+                                          height: 45,
+                                          width: double.infinity,
+                                          decoration: const BoxDecoration(),
+                                          child: const Center(
+                                            child: CircularProgressIndicator(
+                                              color: kOrangeColor,
+                                            ),
+                                          ),
+                                        ),
                               const Spacer(flex: 2),
                             ],
                           ),
