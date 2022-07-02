@@ -24,6 +24,7 @@ class SearchController extends GetxController {
 
   int _count = 0;
   var next, previous;
+  bool  is_searching  = false;
 
   final scrollController = ScrollController();
 
@@ -34,7 +35,6 @@ class SearchController extends GetxController {
     message = Get.arguments['message'];
     switch (idPage) {
       case 'search':
-        
         await filterBooksByTitleOrDescription();
         break;
 
@@ -50,12 +50,14 @@ class SearchController extends GetxController {
     scrollController.addListener(() async {
       if (scrollController.position.maxScrollExtent ==
           scrollController.offset) {
-        if (next != null) {
+        if (next != null && !is_searching) {
+          is_searching = true;
           infinityStatus = LoadingStatus.searching;
           update();
           Future.delayed(const Duration(seconds: 1), () async {
             await listBooks();
           });
+          
         }
       }
     });
@@ -69,7 +71,7 @@ class SearchController extends GetxController {
     super.dispose();
   }
 
-   Future getUserData() async {
+  Future getUserData() async {
     Map<String, dynamic> userJson = await UserInfo.user();
     if (userJson['avatar'] != "") {
       avatar = userJson['avatar'];
@@ -99,43 +101,46 @@ class SearchController extends GetxController {
   Future filterBooksByTitleOrDescription() async {
     infinityStatus = LoadingStatus.searching;
     await _serviceLivre.filterBooksByTitleOrDescription(
-      query: Get.arguments['query'],
-      onSuccess: (data) {
-        _count = data.count;
+        query: Get.arguments['query'],
+        onSuccess: (data) {
+          _count = data.count;
           next = data.next;
           previous = data.previous;
           listLivre.addAll(data.results!);
           infinityStatus = LoadingStatus.completed;
-      update();
-    }, onError: (error) {
-      print("=============== Home error ================");
-      print(error.response!.data);
-      print("==========================================");
-      infinityStatus = LoadingStatus.failed;
-      update();
-    });
+          
+          update();
+        },
+        onError: (error) {
+          print("=============== Home error ================");
+          print(error.response!.data);
+          print("==========================================");
+          infinityStatus = LoadingStatus.failed;
+          update();
+        });
   }
 
-   Future filterBooks() async {
+  Future filterBooks() async {
     message = 'Résultat pour "${searchTextEditingController.text.trim()}"';
     infinityStatus = LoadingStatus.searching;
     update();
     await _serviceLivre.filterBooksByTitleOrDescription(
-      query: searchTextEditingController.text.trim(),
-      onSuccess: (data) {
-        _count = data.count;
+        query: searchTextEditingController.text.trim(),
+        onSuccess: (data) {
+          _count = data.count;
           next = data.next;
           previous = data.previous;
           listLivre = data.results!;
           infinityStatus = LoadingStatus.completed;
-      update();
-    }, onError: (error) {
-      print("=============== Home error ================");
-      print(error.response!.data);
-      print("==========================================");
-      infinityStatus = LoadingStatus.failed;
-      update();
-    });
+          update();
+        },
+        onError: (error) {
+          print("=============== Home error ================");
+          print(error.response!.data);
+          print("==========================================");
+          infinityStatus = LoadingStatus.failed;
+          update();
+        });
   }
 
   Future listBooks() async {
@@ -149,6 +154,7 @@ class SearchController extends GetxController {
           previous = data.previous;
           listLivre.addAll(data.results!);
           infinityStatus = LoadingStatus.completed;
+          is_searching = false;
           update();
         },
         onError: (error) {

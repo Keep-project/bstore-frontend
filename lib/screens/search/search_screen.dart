@@ -98,6 +98,7 @@ class SearchScreen extends GetView<SearchController> {
                               LoadingStatus.searching 
                               //&& controller.idPage != 'liste' 
                               && controller.idPage != 'search'
+                              && controller.listLivre.isEmpty
                           ? Container(
                               padding: const EdgeInsets.all(0),
                               height: 100,
@@ -116,7 +117,8 @@ class SearchScreen extends GetView<SearchController> {
                                 color: Colors.transparent,
                               ),
                               child: SingleChildScrollView(
-                                child: Wrap(
+                                controller: controller.scrollController,
+                                  child: Wrap(
                                     spacing: kDefaultPadding + 6,
                                     runSpacing: 20,
                                     crossAxisAlignment: WrapCrossAlignment.center ,
@@ -136,7 +138,7 @@ class SearchScreen extends GetView<SearchController> {
                                             livre: controller.listLivre[index])),
                                       controller.infinityStatus == LoadingStatus.searching ? Container(
                                         padding: const EdgeInsets.all(0),
-                                        height: 100,
+                                        height: 150,
                                         width: double.infinity,
                                         child: const Center(
                                           child: CircularProgressIndicator(
