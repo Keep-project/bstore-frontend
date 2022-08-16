@@ -3,6 +3,7 @@ import 'package:bstore/core/app_size.dart';
 import 'package:bstore/screens/book_form/book_form.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 
 class FormThreeScreen extends GetView<BookFormScreenController> {
   const FormThreeScreen({Key? key}) : super(key: key);
@@ -20,7 +21,10 @@ class FormThreeScreen extends GetView<BookFormScreenController> {
                     const SizedBox(height: kDefaultPadding),
                     InkWell(
                       onTap: () async {
-                        await controller.chooseImage();
+                        await controller.chooseImage(ImageSource.gallery);
+                      },
+                      onLongPress: () async {
+                        await controller.chooseImage(ImageSource.camera);
                       },
                       child: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 10),

@@ -135,9 +135,9 @@ class BookFormScreenController extends GetxController {
     );
   }
 
-  Future chooseImage() async {
+  Future chooseImage(ImageSource source) async {
     XFile? pickedFile = await picker.pickImage(
-      source: ImageSource.gallery,
+      source: source,
       imageQuality: 50,
     );
     if (pickedFile != null) {
