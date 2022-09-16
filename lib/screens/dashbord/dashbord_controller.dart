@@ -7,6 +7,7 @@ import 'package:bstore/core/app_snackbar.dart';
 import 'package:bstore/core/app_state.dart';
 import 'package:bstore/models/response_data_model.dart/livre_model.dart';
 import 'package:bstore/models/response_data_model.dart/user_data.dart';
+import 'package:bstore/router/app_router.dart';
 import 'package:bstore/services/local_service/authentication/authentication_service.dart';
 import 'package:bstore/services/local_service/authentication/authentication_service_impl.dart';
 import 'package:bstore/services/remote_service/livre/livre_service.dart';
@@ -26,7 +27,8 @@ class ProfilScreenController extends GetxController {
   LoadingStatus recentBookStatus = LoadingStatus.initial;
   LoadingStatus userStatus = LoadingStatus.initial;
   LoadingStatus downloadStatus = LoadingStatus.initial;
-  final LocalAuthenticationServices _localAuth = LocalAuthenticationServicesImpl();
+  final LocalAuthenticationServices _localAuth =
+      LocalAuthenticationServicesImpl();
 
   final LivreService _serviceLivre = LivreServiceImpl();
   final UserService _userService = UserServiceImpl();
@@ -43,7 +45,7 @@ class ProfilScreenController extends GetxController {
   client.Dio? dio;
 
   var imageFile;
-   final picker = ImagePicker();
+  final picker = ImagePicker();
 
   @override
   void onInit() async {
@@ -51,6 +53,11 @@ class ProfilScreenController extends GetxController {
     await getUserData();
     super.onInit();
     update();
+  }
+
+  Future deleteToken() async {
+    await _localAuth.deleteToken();
+    Get.offAllNamed(AppRoutes.LOGIN);
   }
 
   Future chooseImage() async {
@@ -77,24 +84,26 @@ class ProfilScreenController extends GetxController {
       "first_name": "",
       "last_name": "",
       "email": user.email,
-      "user_permissions": user.userPermissions, 
-      "avatar": imageFile != null ? await client.MultipartFile.fromFile(imageFile.path, filename: basename(imageFile.path)) : "",
+      "user_permissions": user.userPermissions,
+      "avatar": imageFile != null
+          ? await client.MultipartFile.fromFile(imageFile.path,
+              filename: basename(imageFile.path))
+          : "",
     });
 
     await _userService.updateUserData(
-      userId: user.id!,
-      userData: formData,
-      onSuccess: (data) async {
-        await _localAuth.saveUser(json.encode(data.results!.toMap()));
-        await getUserData();
-      },
-      onError: (error) {
-        print("===================== Update date / error =================");
-        print(error);
-        print("===========================================================");
-        update();
-      }
-    );
+        userId: user.id!,
+        userData: formData,
+        onSuccess: (data) async {
+          await _localAuth.saveUser(json.encode(data.results!.toMap()));
+          await getUserData();
+        },
+        onError: (error) {
+          print("===================== Update date / error =================");
+          print(error);
+          print("===========================================================");
+          update();
+        });
   }
 
   Future downloadAndSaveFileToStorage(BuildContext context, Livre livre) async {
@@ -102,21 +111,23 @@ class ProfilScreenController extends GetxController {
     downloadStatus = LoadingStatus.searching;
     update();
     try {
-      await saveFile(livre.fichier!, "${livre.titre!.toString().capitalizeFirst}.${livre.extension}");
+      await saveFile(livre.fichier!,
+          "${livre.titre!.toString().capitalizeFirst}.${livre.extension}");
       await downloadBook();
-      CustomSnacbar.showMessage(context, "Document Téléchargé avec succès! ${livre.titre!.toString().capitalizeFirst}.${livre.extension} est desormais disponible dans le dossier de téléchargement de votre téléphone");
+      CustomSnacbar.showMessage(context,
+          "Document Téléchargé avec succès! ${livre.titre!.toString().capitalizeFirst}.${livre.extension} est desormais disponible dans le dossier de téléchargement de votre téléphone");
     } catch (e) {
       print(e);
       downloadStatus = LoadingStatus.failed;
     }
     update();
   }
-  
+
   Future<bool> saveFile(String url, String filename) async {
-    Directory? directory; 
+    Directory? directory;
     try {
       if (Platform.isAndroid) {
-        if ( await _requestPermission(Permission.storage)) {
+        if (await _requestPermission(Permission.storage)) {
           directory = await p.getExternalStorageDirectory();
           String newPath = "";
 
@@ -126,55 +137,47 @@ class ProfilScreenController extends GetxController {
             String folder = folders[x];
             if (folder != "Android") {
               newPath += "/$folder";
-            }
-            else {
+            } else {
               break;
             }
           }
           newPath = "$newPath/Download";
           directory = Directory(newPath);
 
-          if ( !await directory.exists() ) {
-            await directory.create( recursive: true );
+          if (!await directory.exists()) {
+            await directory.create(recursive: true);
           }
-          if ( await directory.exists() ) {
+          if (await directory.exists()) {
             File file = File("${directory.path}/$filename");
             await dio!.download(url, file.path,
-              onReceiveProgress: (rec, total) {
-                progress = "${((rec / total) * 100).toStringAsFixed(0)} %";
-              });
+                onReceiveProgress: (rec, total) {
+              progress = "${((rec / total) * 100).toStringAsFixed(0)} %";
+            });
           }
           return true;
-        }
-        else {
+        } else {
           return false;
         }
-
       }
       return false;
-    }
-    catch (e) {
+    } catch (e) {
       print(e);
       return false;
     }
-    
   }
 
   Future<bool> _requestPermission(Permission permission) async {
     if (await permission.isGranted) {
       return true;
-    }
-    else {
+    } else {
       var result = await permission.request();
       if (result == PermissionStatus.granted) {
         return true;
-      }
-      else {
+      } else {
         return false;
       }
     }
   }
-
 
   Future downloadBook() async {
     await _serviceLivre.downloadBook(
@@ -183,7 +186,8 @@ class ProfilScreenController extends GetxController {
         await getBookById(selectedToDownload!.id!);
       },
       onError: (error) {
-        print("======================= Dashbord / Détail error =====================");
+        print(
+            "======================= Dashbord / Détail error =====================");
         print(error.response!.statusCode);
         print("==========================================================");
         downloadStatus = LoadingStatus.failed;
@@ -258,21 +262,19 @@ class ProfilScreenController extends GetxController {
               break;
             case 'upload':
               uploadsBooks[index] = Livre.fromMap(data['results']);
-              if (data['is_like']){
-                likedBooks = [ Livre.fromMap(data['results']), ...likedBooks ];
-              }
-              else{
+              if (data['is_like']) {
+                likedBooks = [Livre.fromMap(data['results']), ...likedBooks];
+              } else {
                 likedBooks.removeWhere((e) => e.id == id);
-               }
+              }
               break;
             case 'download':
               downloadsBooks[index] = Livre.fromMap(data['results']);
-              if (data['is_like']){
-                likedBooks = [ Livre.fromMap(data['results']), ...likedBooks ];
-              }
-              else{
+              if (data['is_like']) {
+                likedBooks = [Livre.fromMap(data['results']), ...likedBooks];
+              } else {
                 likedBooks.removeWhere((e) => e.id == id);
-               }
+              }
               break;
             default:
               break;

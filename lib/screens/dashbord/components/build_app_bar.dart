@@ -5,8 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class BuildAppBar extends StatelessWidget {
+  final dynamic controller;
   const BuildAppBar({
-    Key? key,
+    Key? key, this.controller,
   }) : super(key: key);
 
   @override
@@ -24,6 +25,22 @@ class BuildAppBar extends StatelessWidget {
             },
             icon: const Icon(CupertinoIcons.arrow_left,
                 size: 26, color: kWhiteColor)),
+        const Spacer(),
+        InkWell(
+          onTap: () async { await controller.deleteToken(); },
+          child: Row(
+            children: const [
+            Text("Déconnexion", style: TextStyle(
+              color: kWhiteColor,
+              fontSize: 14,
+            )),
+            SizedBox(width: 5),
+            Icon(Icons.power,
+                      size: 26, color: kWhiteColor),
+            SizedBox(width: 5),
+            ],
+          ),
+        ),
       ]),
     );
   }

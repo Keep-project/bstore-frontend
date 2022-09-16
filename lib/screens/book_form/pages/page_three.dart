@@ -100,7 +100,7 @@ class FormThreeScreen extends GetView<BookFormScreenController> {
                           return;
                         }
                         controller.datePubToString =
-                            "${newdate.day.toString().padLeft(2, '0')}/${newdate.month.toString().padLeft(2, '0')}/${newdate.year}";
+                          "${newdate.day.toString().padLeft(2, '0')}/${newdate.month.toString().padLeft(2, '0')}/${newdate.year}";
                         controller.datePub = newdate;
                         // controller.saveButtonvisible.value =
                         //     true;

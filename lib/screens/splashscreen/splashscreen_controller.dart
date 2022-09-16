@@ -18,7 +18,6 @@ class SplashScreenController extends GetxController{
   Future verifyToken() async{
     if ( await _localAuth.hasAuthToken()){
       Future.delayed(const Duration(milliseconds: 1000), () {
-        //Get.offAllNamed(AppRoutes.LOGIN);
         Get.offAllNamed(AppRoutes.HOME);
       });
     }
